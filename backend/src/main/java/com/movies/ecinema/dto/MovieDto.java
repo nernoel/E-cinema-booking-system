@@ -3,7 +3,7 @@
  * to the client sensitive information
  */
 
-package com.movies.dto;
+package com.movies.ecinema.dto;
 
 import lombok.*;
 
@@ -12,11 +12,19 @@ import lombok.*;
 @NoArgsConstructor // Create default constructor
 @AllArgsConstructor // Create all args constructor
 
-
+@Data
 public class MovieDto {
+    private long id;
+
     private String title;
+
     private String genre;
+
     private int runtime;
+
     private String description;
+
     private String releaseDate;
+    
+    private String moviePosterLink;
 }
