@@ -24,7 +24,7 @@ public class Movie {
     @Column(nullable = false)
     private String description;
 
-    // Movie released boolean
-    private boolean isReleased;
-
+    // Movie release date
+    @Column(nullable = false)
+    private String releaseDate;
 }
