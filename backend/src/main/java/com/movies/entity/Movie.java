@@ -1,4 +1,4 @@
-package com.movies.movie;
+package com.movies.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,6 +19,14 @@ public class Movie {
     // Movie title
     @Column(nullable = false)
     private String title;
+
+    // Movie genre
+    @Column(nullable = false)
+    private String genre;
+
+    // Movie runtime
+    @Column(nullable=false)
+    private int runtime;
 
     // Movie description
     @Column(nullable = false)
