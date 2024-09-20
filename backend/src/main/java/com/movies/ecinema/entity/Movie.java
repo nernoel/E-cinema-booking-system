@@ -1,4 +1,4 @@
-package com.movies.entity;
+package com.movies.ecinema.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "movies")
 public class Movie {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -31,6 +32,10 @@ public class Movie {
     // Movie description
     @Column(nullable = false)
     private String description;
+
+    // Movie image
+    @Column()
+    private String moviePosterLink;
 
     // Movie release date
     @Column(nullable = false)
