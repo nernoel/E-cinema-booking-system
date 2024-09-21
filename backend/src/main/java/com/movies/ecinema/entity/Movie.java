@@ -33,7 +33,7 @@ public class Movie {
     @Column(nullable = false)
     private String description;
 
-    // Movie image
+    // Movie image link
     @Column()
     private String moviePosterLink;
 
