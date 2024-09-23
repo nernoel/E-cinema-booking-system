@@ -1,37 +1,37 @@
-/* src/app/home.css */
+/* src/app/home-loggedin/home-loggedin.css */
 
 body {
-    background-color: #121212; /* Dark background */
-    color: #ffffff; /* White text */
+    background-color: #121212; 
+    color: #ffffff; 
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
 }
 
 h1, h2, h3 {
-    color: #ffcc00; /* Yellow text for headers */
+    color: #ffcc00; 
 }
 
 input[type="text"] {
     padding: 10px;
-    border: 1px solid #ffffff; /* White border for the input */
+    border: 1px solid #ffffff; 
     border-radius: 5px;
     width: 200px;
     margin-right: 10px;
-    color: black; /* Black text in the input */
+    color: black; 
 }
 
 button {
     padding: 10px 15px;
-    background-color: #ffcc00; /* Yellow background for buttons */
-    color: #000000; /* Black text for buttons */
+    background-color: #ffcc00; 
+    color: #000000; 
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #e6b800; /* Darker yellow on hover */
+    background-color: #e6b800; 
 }
 
 /* Navigation Bar Styles */
@@ -40,7 +40,7 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
-    background-color: #333; /* Dark background for the navbar */
+    background-color: #333; 
     color: white;
 }
 
@@ -55,7 +55,7 @@ button:hover {
 }
 
 .nav-links a:hover {
-    background-color: #555; /* Darker background on hover */
+    background-color: #555; 
     border-radius: 5px;
 }
 
