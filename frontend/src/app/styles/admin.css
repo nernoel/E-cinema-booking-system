@@ -1,0 +1,74 @@
+body {
+    font-family: sans-serif;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: white;
+    color: black;
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    background-color: rgb(14, 218, 241);
+    color: white;
+    border: black;
+    border-radius: 5px;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.adminDashboard {
+    text-align: center;
+    padding: 50px;
+}
+
+.managePromotions {
+    margin: 20px auto;
+    width: 50%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px black;
+}
+
+.manageMovies {
+    margin: 20px auto;
+    width: 50%;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px black;
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: white;
+    border-radius: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: white;
+    margin: 10px 0;
+    padding: 10px;
+    border: black;
+    border-radius: 5px;
+}
