@@ -22,9 +22,13 @@ public class MovieDto {
 
     private int runtime;
 
+    private String trailer;
+
     private String description;
 
     private String releaseDate;
-    
+
     private String moviePosterLink;
+
+    private String category;
 }
