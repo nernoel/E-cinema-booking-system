@@ -1,5 +1,6 @@
 package com.movies.ecinema.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,8 +43,16 @@ public class MovieController {
     // Get all movies
     @GetMapping
     public List<MovieDto> getAllMovies() {
-        return movieService.getAllMovies().stream()
-                .map(movie -> modelMapper.map(movie, MovieDto.class))
-                .collect(Collectors.toList());
+       List<Movie> movies = movieService.getAllMovies();
+       List<MovieDto> movieDtos = new ArrayList<>();
+
+       // Iterate through each movie in the list
+       for(Movie movie: movies){
+        // Map each movie to the modelmapper
+        MovieDto movieDto = modelMapper.map(movie, MovieDto.class);
+        movieDtos.add(movieDto); // Add movie dto to list
+       }
+
+       return movieDtos;
     }
 }
