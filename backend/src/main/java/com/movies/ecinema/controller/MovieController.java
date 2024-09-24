@@ -14,6 +14,7 @@ import com.movies.ecinema.dto.MovieDto;
 import com.movies.ecinema.entity.Movie;
 import com.movies.ecinema.service.MovieService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
@@ -27,7 +28,7 @@ public class MovieController {
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }
-    
+
     // Add a new movie
     @PostMapping
     public ResponseEntity<MovieDto> addMovie(@RequestBody MovieDto movieDto) {
@@ -43,16 +44,16 @@ public class MovieController {
     // Get all movies
     @GetMapping
     public List<MovieDto> getAllMovies() {
-       List<Movie> movies = movieService.getAllMovies();
-       List<MovieDto> movieDtos = new ArrayList<>();
+        List<Movie> movies = movieService.getAllMovies();
+        List<MovieDto> movieDtos = new ArrayList<>();
 
-       // Iterate through each movie in the list
-       for(Movie movie: movies){
-        // Map each movie to the modelmapper
-        MovieDto movieDto = modelMapper.map(movie, MovieDto.class);
-        movieDtos.add(movieDto); // Add movie dto to list
-       }
+        // Iterate through each movie in the list
+        for (Movie movie : movies) {
+            // Map each movie to the modelmapper
+            MovieDto movieDto = modelMapper.map(movie, MovieDto.class);
+            movieDtos.add(movieDto); // Add movie dto to list
+        }
 
-       return movieDtos;
+        return movieDtos;
     }
 }

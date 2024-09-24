@@ -1,41 +1,29 @@
-// src/app/home-loggedout/page.js
-
 "use client"; 
 
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import './home-loggedout.css'; // import the css
+import './home-loggedout.css'; 
 
 export default function Home() {
+   // Movies array is initially empty
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // dummy movie data with valid links
-  const dummyMovies = [
-    {
-      title: "Fantastic Mr. Fox",
-      genre: "Animation",
-      runtime: 87,
-      description: "A family of foxes tries to outwit three mean farmers.",
-      releaseDate: "2009-11-13",
-      trailer: "https://www.youtube.com/embed/n2igjYFojUo",
-      moviePosterLink: "https://upload.wikimedia.org/wikipedia/en/a/af/Fantastic_mr_fox.jpg",
-      category: "Currently Running"
-    },
-    {
-      title: "9",
-      genre: "Animation, Action, Adventure",
-      runtime: 79,
-      description: "A group of sentient rag dolls must fight for their survival against machines that have wiped out humanity.",
-      releaseDate: "2009-09-09",
-      trailer: "https://www.youtube.com/embed/RSDlFmVo330",
-      moviePosterLink: "https://upload.wikimedia.org/wikipedia/en/c/c9/9posterfinal.jpg",
-      category: "Coming Soon"
+    // Defining API URL
+  const API_URL = "http://localhost:8080/api/movies";
+
+  // Defining function to fetch API
+  const fetchData = async () => {
+    try {
+      const { data } = await axios.get(API_URL);
+      setMovies(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-  ];
+  };
 
   useEffect(() => {
-    // set movies to dummy data
-    setMovies(dummyMovies);
+    fetchData(); 
   }, []);
 
   const handleSearch = (event) => {
@@ -71,25 +59,15 @@ export default function Home() {
         <button onClick={performSearch}>Search</button>
       </div>
 
-      {/* movie categories */}
-      {['Currently Running', 'Coming Soon'].map(category => (
-        <div key={category}>
-          <h2>{category}</h2>
-          {movies.filter(movie => movie.category === category && movie.title.toLowerCase().includes(searchTerm))
-                 .map((movie, index) => (
-            <div key={index}>
-              <h3>{movie.title}</h3>
-              <img src={movie.moviePosterLink} alt={movie.title} style={{ width: '200px', height: 'auto' }} />
-              <iframe 
-                width="560" 
-                height="315" 
-                src={movie.trailer} 
-                title={movie.title} 
-                allowFullScreen
-              ></iframe>
-              <button onClick={() => window.location.href = '/login'}>Book Movie</button>
-            </div>
-          ))}
+      {/* Display movies */}
+      <h2>Movies</h2>
+      {movies.filter(movie => movie.title.toLowerCase().includes(searchTerm))
+             .map((movie, index) => (
+        <div key={index}>
+          <h3>{movie.title}</h3>
+          <img src={movie.moviePosterLink} alt={movie.title} style={{ width: '200px', height: 'auto' }} />
+          <iframe width="560" height="315" src={movie.trailer} title={movie.title} allowFullScreen></iframe>
+          <button onClick={() => window.location.href = '/login'}>Book Movie</button>
         </div>
       ))}
     </div>
