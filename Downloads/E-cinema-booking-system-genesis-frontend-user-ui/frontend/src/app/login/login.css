@@ -1,0 +1,57 @@
+/* src/app/login/login.css */
+
+body {
+    background-color: #121212; 
+    color: #ffffff; 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.login-container {
+    max-width: 400px; 
+    margin: auto;
+    padding: 20px;
+    background-color: #1e1e1e; 
+    border-radius: 10px; 
+}
+
+h1 {
+    color: #ffcc00; 
+    text-align: center; 
+}
+
+input[type="email"],
+input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ffffff; 
+    border-radius: 5px;
+    width: 100%; 
+    margin-bottom: 15px; 
+    color: black; 
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #ffcc00; 
+    color: #000000; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; 
+}
+
+button:hover {
+    background-color: #e6b800; 
+}
+
+a {
+    color: #ffcc00; 
+    text-align: center; 
+    display: block; 
+    margin-top: 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
