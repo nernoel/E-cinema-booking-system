@@ -1,0 +1,64 @@
+/* src/app/checkout/checkout.css */
+
+body {
+    background-color: #121212; 
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .checkout-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+  }
+  
+  h1 {
+    color: #ffcc00; 
+    text-align: center;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ffffff;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    color: black;
+  }
+  
+  .checkout-buttons {
+    display: flex;
+    justify-content: space-between; 
+  }
+  
+  .confirm-button,
+  .cancel-button {
+    padding: 10px 20px;
+    background-color: #ffcc00; 
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .confirm-button:hover,
+  .cancel-button:hover {
+    background-color: #e6b800; 
+  }
+  
