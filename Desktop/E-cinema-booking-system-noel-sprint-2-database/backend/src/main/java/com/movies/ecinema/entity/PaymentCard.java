@@ -19,7 +19,8 @@ public class PaymentCard {
     private String expiryDate;
     private String cardType;
 
-    public PaymentCard(long id, String cardNumber, String cardHolderName, String expiryDate, String cardType, User user) {
+    public PaymentCard(long id, String cardNumber, String cardHolderName, String expiryDate, String cardType,
+            User user) {
         this.id = id;
         this.cardNumber = cardNumber;
         this.cardHolderName = cardHolderName;
@@ -27,7 +28,6 @@ public class PaymentCard {
         this.cardType = cardType;
         this.user = user;
     }
-    
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
