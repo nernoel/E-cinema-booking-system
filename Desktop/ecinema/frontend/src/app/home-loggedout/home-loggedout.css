@@ -1,0 +1,63 @@
+/* src/app/home-loggedout/home-loggedout.css */
+
+body {
+    background-color: #121212; 
+    color: #ffffff; 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    color: #ffcc00; 
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ffffff; 
+    border-radius: 5px;
+    width: 200px;
+    margin-right: 10px;
+    color: black; 
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #ffcc00; 
+    color: #000000; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e6b800; 
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333; 
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+.nav-links a:hover {
+    background-color: #555; 
+    border-radius: 5px;
+}
+
+.logo {
+    font-size: 24px;
+}

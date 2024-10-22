@@ -1,0 +1,132 @@
+/* src/app/home-loggedin/home-loggedin.css */
+
+body {
+    background-color: #121212; 
+    color: #ffffff; 
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2, h3 {
+    color: #ffcc00; 
+}
+
+input[type="text"] {/* home-loggedin.css */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  box-shadow: 0 4px 2px -2px gray;
+}
+
+.navbar .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar .nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .nav-links a {
+  margin-right: 20px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.navbar .nav-links a:hover {
+  text-decoration: underline;
+}
+
+.navbar .logout-button {
+  background-color: red;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.navbar .logout-button:hover {
+  background-color: darkred;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  padding: 10px;
+  width: 300px;
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: darkblue;
+}
+
+.logout-button {
+  margin-left: 20px; /* Space between the nav links and the logout button */
+}
+
+    padding: 10px;
+    border: 1px solid #ffffff; 
+    border-radius: 5px;
+    width: 200px;
+    margin-right: 10px;
+    color: black; 
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #ffcc00; 
+    color: #000000; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #e6b800; 
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333; 
+    color: white;
+}
+
+.nav-links {
+    display: flex;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+}
+
+.nav-links a:hover {
+    background-color: #555; 
+    border-radius: 5px;
+}
+
+.logo {
+    font-size: 24px;
+}
