@@ -2,7 +2,7 @@
 
 "use client"; 
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './edit-profile.css'; // import the css
 
 export default function EditProfile() {
@@ -18,10 +18,6 @@ export default function EditProfile() {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  // state for profile photo
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const [previewPhoto, setPreviewPhoto] = useState(null);
 
   // handle name change
   const handleNameChange = (event) => {
@@ -45,44 +41,12 @@ export default function EditProfile() {
     console.log('Confirm Password:', confirmPassword);
   };
 
-  // handle profile photo change
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfilePhoto(file);
-      setPreviewPhoto(URL.createObjectURL(file)); // Create a preview of the selected image
-    }
-  };
-
-  const handlePhotoUpload = (event) => {
-    event.preventDefault();
-    // logic to upload profile photo
-    if (profilePhoto) {
-      console.log('Profile Photo:', profilePhoto);
-      // will be implemented later
-    }
   };
 
   return (
     <div className="edit-profile-container">
       <h1>Edit Profile</h1>
-
-      {/* Change Profile Photo Section */}
-      <form onSubmit={handlePhotoUpload}>
-        <h2>Change Profile Photo</h2>
-        <div className="form-group">
-          <label>Upload New Profile Photo:</label>
-          <input type="file" accept="image/*" onChange={handlePhotoChange} required />
-        </div>
-        {previewPhoto && (
-          <div className="profile-photo-preview">
-            <h3>Preview:</h3>
-            <img src={previewPhoto} alt="Profile Preview" className="photo-preview" />
-          </div>
-        )}
-        <button type="submit">Upload Photo</button>
-      </form>
-
+      
       {/* Change Name Section */}
       <form onSubmit={handleNameChange}>
         <h2>Change Name</h2>
@@ -167,4 +131,3 @@ export default function EditProfile() {
       <a href="/" className="back-link">Back to Home</a>
     </div>
   );
-}
