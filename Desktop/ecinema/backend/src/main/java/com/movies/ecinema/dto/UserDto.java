@@ -44,7 +44,7 @@ public class UserDto {
         this.password = password;
 
         this.status = status;
-        
+
         this.role = role;
 
         this.paymentCards = paymentCards;

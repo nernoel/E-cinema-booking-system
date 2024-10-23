@@ -1,7 +1,9 @@
 package com.movies.ecinema.service;
 
 import com.movies.ecinema.dto.UserDto;
-
+import com.movies.ecinema.entity.User.Role;
+import com.movies.ecinema.dto.LoginDto;
+import com.movies.ecinema.dto.PaymentCardDto;
 
 import java.util.List;
 
@@ -10,8 +12,11 @@ public interface UserService {
     // Create a new user
     UserDto createUser(UserDto userDto);
 
-    // Get all users
+    // Get all users from the repository database 
     List<UserDto> getAllUsers();
+
+     UserDto loginUser(LoginDto loginDto);
+
 
     /* 
 

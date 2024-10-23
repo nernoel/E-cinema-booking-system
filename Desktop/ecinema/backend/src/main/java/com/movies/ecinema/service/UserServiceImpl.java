@@ -1,30 +1,29 @@
 package com.movies.ecinema.service;
 
 import com.movies.ecinema.dto.UserDto;
+import com.movies.ecinema.dto.LoginDto;
 import com.movies.ecinema.dto.PaymentCardDto;
 import com.movies.ecinema.entity.PaymentCard;
 import com.movies.ecinema.entity.User;
-// import com.movies.ecinema.repository.PaymentCardRepository;
 import com.movies.ecinema.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
 import java.util.List;
-// import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    /*
-     * Importing users from JPA repo
-     */
+    
+
+    /* Importing users from JPA repo */
     @Autowired
     private UserRepository userRepository;
 
-     /*
-     * Importing payment card information from JPA repo
-     */
+   
+
   
     // private PaymentCardRepository paymentCardRepository;
 
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDto.getEmail());
 
         user.setBillingAddress(userDto.getBillingAddress());
-
+        
         user.setPassword(userDto.getPassword());
 
         user.setStatus(userDto.getStatus());
@@ -57,6 +56,20 @@ public class UserServiceImpl implements UserService {
         return mapToDto(user);
     }
 
+    @Override
+    public UserDto loginUser(LoginDto loginDto) {
+        // Find user by email
+        User user = userRepository.findByEmail(loginDto.getEmail());
+
+        // Check if user exists and compare plain-text passwords
+        if (user == null || !user.getPassword().equals(loginDto.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
+
+        // Map and return the user DTO if credentials are valid
+        return mapToDto(user);
+    }
+
     /*
      * Get all users from the database
      */
@@ -67,8 +80,12 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
 
         // Map users to Dto and place into list
-        return users.stream().map(this::mapToDto).collect(Collectors.toList());
+        return users.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
+
+    
 
     /*
      * Mapping user dto to user object
@@ -86,7 +103,7 @@ public class UserServiceImpl implements UserService {
 
         userDto.setLastname(user.getLastname());
 
-        userDto.setPassword(user.getPassword());
+        user.setPassword(userDto.getPassword());
 
         userDto.setEmail(user.getEmail());
 

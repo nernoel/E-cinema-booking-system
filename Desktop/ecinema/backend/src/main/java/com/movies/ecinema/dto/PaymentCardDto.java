@@ -13,17 +13,25 @@ import lombok.Setter;
 public class PaymentCardDto {
 
     private long id;
+
     private String cardNumber;
+
     private String cardHolderName;
+
     private String expiryDate;
+    
     private String cardType;
 
     // Constructor to create PaymentCardDTO from PaymentCard entity
     public PaymentCardDto(PaymentCard paymentCard) {
         this.id = paymentCard.getId();
+
         this.cardNumber = paymentCard.getCardNumber();
+
         this.cardHolderName = paymentCard.getCardHolderName();
+
         this.expiryDate = paymentCard.getExpiryDate();
+
         this.cardType = paymentCard.getCardType();
     }
 }

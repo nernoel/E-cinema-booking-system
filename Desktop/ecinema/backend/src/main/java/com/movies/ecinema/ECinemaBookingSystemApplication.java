@@ -3,6 +3,7 @@ package com.movies.ecinema;
 // Importing spring framework
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
 // Importing model mapper
@@ -11,7 +12,7 @@ import org.modelmapper.ModelMapper;
 // Importing environment variable loader
 import io.github.cdimascio.dotenv.Dotenv;
 
-@SpringBootApplication
+@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
 public class ECinemaBookingSystemApplication {
 
 	@Bean

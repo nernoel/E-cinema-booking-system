@@ -10,13 +10,18 @@ import lombok.*;
 @Table(name = "payment_cards")
 public class PaymentCard {
 
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     private String cardNumber;
+
     private String cardHolderName;
+
     private String expiryDate;
+
     private String cardType;
 
     public PaymentCard(long id, String cardNumber, String cardHolderName, String expiryDate, String cardType,

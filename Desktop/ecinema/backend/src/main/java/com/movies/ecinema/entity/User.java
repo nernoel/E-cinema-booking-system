@@ -1,5 +1,6 @@
 package com.movies.ecinema.entity;
 
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +14,15 @@ import java.util.List;
  * password
  * status
  */
+
 @Entity
 @Table(name = "users")
+
+
 public class User {
+
+    // Defining Bcyrpt password encoder
+    //private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /* Autogenerate user ID */
     @Id
@@ -124,6 +131,10 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+   //public boolean validatePassword(String rawPassword) {
+     //   return passwordEncoder.matches(rawPassword, this.password);
+    //}
 
     public String getBillingAddress() {
         return billing_address;
