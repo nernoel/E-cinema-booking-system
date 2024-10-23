@@ -1,16 +1,13 @@
 package com.movies.ecinema.controller;
 
 import com.movies.ecinema.dto.UserDto;
-import com.movies.ecinema.dto.UserDto;
-import com.movies.ecinema.dto.PaymentCardDto;
-import com.movies.ecinema.dto.PaymentCardDto;
 import com.movies.ecinema.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -26,6 +23,7 @@ public class UserController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
+    /* 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDTO) {
         UserDto updatedUser = userService.updateUser(id, userDTO);
@@ -56,7 +54,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Payment card endpoints
+   
     @PostMapping("/{userId}/payment-cards")
     public ResponseEntity<PaymentCardDto> addPaymentCard(@PathVariable long userId, @RequestBody PaymentCardDto paymentCardDTO) {
         PaymentCardDto newCard = userService.addPaymentCard(userId, paymentCardDTO);
@@ -74,4 +72,5 @@ public class UserController {
         userService.deletePaymentCard(userId, cardId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    */
 }

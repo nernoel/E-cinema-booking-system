@@ -2,7 +2,7 @@ package com.movies.ecinema.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    @Autowired
+
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }

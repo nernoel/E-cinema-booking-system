@@ -4,51 +4,136 @@ import com.movies.ecinema.dto.UserDto;
 import com.movies.ecinema.dto.PaymentCardDto;
 import com.movies.ecinema.entity.PaymentCard;
 import com.movies.ecinema.entity.User;
-import com.movies.ecinema.entity.User.Role;
-import com.movies.ecinema.repository.PaymentCardRepository;
+// import com.movies.ecinema.repository.PaymentCardRepository;
 import com.movies.ecinema.repository.UserRepository;
-import com.movies.ecinema.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+// import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    /*
+     * Importing users from JPA repo
+     */
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PaymentCardRepository paymentCardRepository;
+     /*
+     * Importing payment card information from JPA repo
+     */
+  
+    // private PaymentCardRepository paymentCardRepository;
 
     @Override
-public UserDto createUser(UserDto userDto) {
-    User user = new User();
-    user.setFirstname(userDto.getFirstname());
-    user.setLastname(userDto.getLastname());
-    user.setEmail(userDto.getEmail());
-    user.setAddress(userDto.getAddress());
-    user.setPassword(userDto.getPassword());
-    user.setStatus(userDto.getStatus());
-    
-    // Check and set role
-    if (userDto.getRole() != null) {
+    public UserDto createUser(UserDto userDto) {
+        // Call new user constructor
+        User user = new User();
+
+        /*
+         * Setting user information from userDto object
+         */ 
+        user.setFirstname(userDto.getFirstname());
+
+        user.setLastname(userDto.getLastname());
+
+        user.setEmail(userDto.getEmail());
+
+        user.setBillingAddress(userDto.getBillingAddress());
+
+        user.setPassword(userDto.getPassword());
+
+        user.setStatus(userDto.getStatus());
+
         user.setRole(userDto.getRole());
-    } else {
-        user.setRole("USER"); // Default role if none provided
+
+        // Save user to JPA repo
+        user = userRepository.save(user);
+
+        // Map the DTO to the user object
+        return mapToDto(user);
     }
 
-    // Save the user to the database
-    user = userRepository.save(user);
-    return mapToDto(user);
-}
+    /*
+     * Get all users from the database
+     */
+    @Override
+    public List<UserDto> getAllUsers() {
 
+        // Find all users from user repo
+        List<User> users = userRepository.findAll();
 
+        // Map users to Dto and place into list
+        return users.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
 
+    /*
+     * Mapping user dto to user object
+     */
+    private UserDto mapToDto(User user) {
+        // Create userDto constructor
+        UserDto userDto = new UserDto();
 
+        /* 
+         * Set all user information
+         */
+        userDto.setId(user.getId());
+
+        userDto.setFirstname(user.getFirstname());
+
+        userDto.setLastname(user.getLastname());
+
+        userDto.setPassword(user.getPassword());
+
+        userDto.setEmail(user.getEmail());
+
+        userDto.setBillingAddress(user.getBillingAddress());
+
+        userDto.setStatus(user.getStatus());
+
+        userDto.setRole(user.getRole());
+
+        /*
+         * Map each payment card via stream to collect users to return list of user
+         * payment cards for each user
+         */
+        List<PaymentCardDto> paymentCards = user.getPaymentCards().stream()
+                .map(this::mapToPaymentCardDto).collect(Collectors.toList());
+        userDto.setPaymentCards(paymentCards);
+
+        // Return the data access object
+        return userDto;
+    }
+
+    /*
+     * Map each payment card to the payment card data object
+     */
+    private PaymentCardDto mapToPaymentCardDto(PaymentCard paymentCard) {
+        // Construct payment card dto object
+        PaymentCardDto paymentCardDto = new PaymentCardDto();
+        /*
+         * Set payment card information
+         */
+        paymentCardDto.setId(paymentCard.getId());
+
+        paymentCardDto.setCardNumber(paymentCard.getCardNumber());
+
+        paymentCardDto.setCardHolderName(paymentCard.getCardHolderName());
+
+        paymentCardDto.setExpiryDate(paymentCard.getExpiryDate());
+
+        paymentCardDto.setCardType(paymentCard.getCardType());
+
+        // Return payment card data access object
+        return paymentCardDto;
+    }
+
+    
+
+    /* UNUSED CODE FOR NOW! SAVE INCASE NEEDED LATER
     @Override
     public UserDto updateUser(long id, UserDto userDto) {
         User user = userRepository.findById(id)
@@ -56,7 +141,7 @@ public UserDto createUser(UserDto userDto) {
         user.setFirstname(userDto.getFirstname());
         user.setLastname(userDto.getLastname());
         user.setEmail(userDto.getEmail());
-        user.setAddress(userDto.getAddress());
+        user.setBillingAddress(userDto.getBilling_address());
         user.setStatus(userDto.getStatus());
 
         User updatedUser = userRepository.save(user);
@@ -83,13 +168,6 @@ public UserDto createUser(UserDto userDto) {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        return users.stream().map(this::mapToDto).collect(Collectors.toList());
-    }
-
-    // Payment card management
-    @Override
     public PaymentCardDto addPaymentCard(long userId, PaymentCardDto paymentCardDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -103,74 +181,17 @@ public UserDto createUser(UserDto userDto) {
 
     @Override
     public List<PaymentCardDto> getPaymentCardsForUser(long userId) {
-        Optional<PaymentCard> paymentCards = paymentCardRepository.findById(userId);
+        List<PaymentCard> paymentCards = paymentCardRepository.findByUserId(userId);
         return paymentCards.stream().map(this::mapToPaymentCardDto).collect(Collectors.toList());
     }
-
-    @Override
+        @Override
     public void deletePaymentCard(long userId, long cardId) {
-        paymentCardRepository.deleteById(cardId);
-    }
-
-    // Helper methods
-    private UserDto mapToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setFirstname(user.getFirstname());
-        userDto.setLastname(user.getLastname());
-        userDto.setPassword(user.getPassword());
-        userDto.setEmail(user.getEmail());
-        userDto.setAddress(user.getAddress());
-       //user.setStatus("ACTIVE");  // Set the user's status to INACTIVE
-        userDto.setStatus(user.getStatus());  // Set the userDto's status as a string
-        
-
-
-        // Add a null check for the user's status
-        if (user.getStatus() != null) {
-            userDto.setStatus(user.getStatus());
-        } else {
-            userDto.setStatus("INACTIVE"); // Or any default status you'd prefer
+        PaymentCard paymentCard = paymentCardRepository.findById(cardId)
+                .orElseThrow(() -> new RuntimeException("Payment card not found"));
+        if (paymentCard.getUser().getId() != userId) {
+            throw new RuntimeException("Payment card does not belong to user");
         }
-
-        // Convert user's payment cards to dtos
-        List<PaymentCardDto> paymentCards = user.getPaymentCards().stream()
-                .map(this::mapToPaymentCardDto).collect(Collectors.toList());
-        userDto.setPaymentCards(paymentCards);
-
-        return userDto;
-    }
-
-    @Override
-    public List<UserDto> getUserByRole(String role) {
-    List<User> users = userRepository.findByRole(role); // Fetch users by role
-
-    // Map the User entities to UserDto and collect into a list
-    return users.stream()
-                .map(this::mapToDto) // Assuming you have a mapToDto method
-                .collect(Collectors.toList());
-}
-
-    /* 
-    private User mapToEntity(UserDto userDto) {
-        User user = new User();
-        user.setFirstname(userDto.getFirstname());
-        user.setLastname(userDto.getLastname());
-        user.setEmail(userDto.getEmail());
-        user.setAddress(userDto.getAddress());
-        return user;
-    }
-        */
-
-    private PaymentCardDto mapToPaymentCardDto(PaymentCard paymentCard) {
-        PaymentCardDto paymentCardDto = new PaymentCardDto();
-        paymentCardDto.setId(paymentCard.getId());
-        paymentCardDto.setCardNumber(paymentCard.getCardNumber());
-        paymentCardDto.setCardHolderName(paymentCard.getCardHolderName());
-        paymentCardDto.setExpiryDate(paymentCard.getExpiryDate());
-        paymentCardDto.setCardType(paymentCard.getCardType());
-        paymentCardDto.setId(paymentCard.getUser().getId());
-        return paymentCardDto;
+        paymentCardRepository.deleteById(cardId);
     }
 
     private PaymentCard mapToPaymentCardEntity(PaymentCardDto paymentCardDto) {
@@ -182,5 +203,5 @@ public UserDto createUser(UserDto userDto) {
         return paymentCard;
     }
 
-    
+     */
 }
