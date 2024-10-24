@@ -1,14 +1,20 @@
 /* src/app/register/register.css */
 
 body {
+<<<<<<< HEAD
     background-color: #121212;
     color: #ffffff;
+=======
+    background-color: #121212; 
+    color: #ffffff; 
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
 }
 
 .register-container {
+<<<<<<< HEAD
     max-width: 400px;
     margin: auto;
     padding: 20px;
@@ -48,11 +54,35 @@ input:focus {
 
 input::placeholder {
     color: #aaaaaa;
+=======
+    max-width: 400px; 
+    margin: auto;
+    padding: 20px;
+    background-color: #1e1e1e; 
+    border-radius: 10px; 
+}
+
+h1 {
+    color: #ffcc00; 
+    text-align: center;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ffffff; 
+    border-radius: 5px;
+    width: 100%; 
+    margin-bottom: 15px; 
+    color: black; 
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
 }
 
 button {
     padding: 10px 15px;
     background-color: #ffcc00;
+<<<<<<< HEAD
     color: #000000;
     border: none;
     border-radius: 5px;
@@ -91,10 +121,29 @@ a {
     text-align: center;
     display: block;
     margin-top: 10px;
+=======
+    color: #000000; 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%; 
+}
+
+button:hover {
+    background-color: #e6b800; 
+}
+
+a {
+    color: #ffcc00; 
+    text-align: center; 
+    display: block; 
+    margin-top: 10px; 
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
 }
 
 a:hover {
     text-decoration: underline;
+<<<<<<< HEAD
     color: #e6b800;
 }
 
@@ -117,4 +166,6 @@ a:hover {
         max-width: 100%;
         padding: 15px;
     }
+=======
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
 }

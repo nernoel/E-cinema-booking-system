@@ -3,12 +3,17 @@
 "use client"; 
 
 import React, { useState } from 'react';
+<<<<<<< HEAD
 import { useRouter } from 'next/navigation'; 
 import './login.css';
+=======
+import './login.css'; // import the css
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
 
 export default function Login() {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
+<<<<<<< HEAD
   const router = useRouter();
 
   const handleLogin = async (e) => {
@@ -27,6 +32,13 @@ export default function Login() {
     } else {
       console.error('Login failed');
     }
+=======
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // login logic 
+    console.log('Logging in:', { email, password });
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
   };
 
   return (
@@ -54,7 +66,14 @@ export default function Login() {
         <button type="submit">Login</button>
       </form>
       <p>Don't have an account? <a href="/register">Register here</a></p>
+<<<<<<< HEAD
       <a href="/">Back to Home</a>
     </div>
   );
 }
+=======
+      <a href="/">Back to Home</a> {/* Link back to home */}
+    </div>
+  );
+}
+>>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
