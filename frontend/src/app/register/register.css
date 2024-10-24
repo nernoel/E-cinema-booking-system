@@ -1,58 +1,100 @@
 /* src/app/register/register.css */
 
 body {
-    background-color: #121212; 
-    color: #ffffff; 
+    background-color: #121212;
+    color: #ffffff;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
 }
 
 .register-container {
-    max-width: 400px; 
+    max-width: 400px;
     margin: auto;
     padding: 20px;
-    background-color: #1e1e1e; 
-    border-radius: 10px; 
+    background-color: #1e1e1e;
+    border-radius: 10px;
 }
 
 h1 {
-    color: #ffcc00; 
+    color: #ffcc00;
     text-align: center;
+}
+
+h3 {
+    color: #ffcc00;
+    margin-top: 20px;
 }
 
 input[type="text"],
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="tel"],
+input[type="number"] {
     padding: 10px;
-    border: 1px solid #ffffff; 
+    border: 1px solid #ffffff;
     border-radius: 5px;
-    width: 100%; 
-    margin-bottom: 15px; 
-    color: black; 
+    width: 100%;
+    margin-bottom: 15px;
+    color: black;
+}
+
+select {
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 15px;
+    color: black;
 }
 
 button {
     padding: 10px 15px;
     background-color: #ffcc00;
-    color: #000000; 
+    color: #000000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    width: 100%; 
+    width: 100%;
 }
 
 button:hover {
-    background-color: #e6b800; 
+    background-color: #e6b800;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.checkbox-container label {
+    margin-left: 10px;
 }
 
 a {
-    color: #ffcc00; 
-    text-align: center; 
-    display: block; 
-    margin-top: 10px; 
+    color: #ffcc00;
+    text-align: center;
+    display: block;
+    margin-top: 10px;
 }
 
 a:hover {
     text-decoration: underline;
+}
+
+h3 {
+    margin-top: 20px;
+}
+
+.address-field {
+    margin-bottom: 15px;
+}
+
+.card-info, .address-info {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    background-color: #2a2a2a;
 }
