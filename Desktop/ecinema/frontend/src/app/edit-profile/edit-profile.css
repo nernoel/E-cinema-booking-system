@@ -1,78 +1,89 @@
-/* src/app/edit-profile/edit-profile.css */
-
 .edit-profile-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #333; 
-    color: white;
-    border-radius: 10px;
-  }
-  
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-    color: #ffcc00; 
-  }
-  
-  input {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    background-color: #444; 
-    color: white; 
-  }
-  
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: #ffcc00; 
-    color: #1e1e1e; 
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #e6b800; 
-  }
-  
-  .back-link {
-    display: block;
-    margin-top: 20px;
-    text-align: center;
-    color: #ffcc00; 
-    text-decoration: none;
-  }
-  
-  .back-link:hover {
-    color: white; 
-  }
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #333;
+  color: white;
+  border-radius: 10px;
+}
 
-  .profile-photo-preview {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .photo-preview {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-top: 10px;
-  }
-  
-  
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #ffcc00;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background-color: #444;
+  color: white;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #ffcc00;
+  color: #1e1e1e;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e6b800;
+}
+
+.back-link {
+  display: block;
+  margin-top: 20px;
+  text-align: center;
+  color: #ffcc00;
+  text-decoration: none;
+}
+
+.back-link:hover {
+  color: white;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+.profile-photo-preview {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.photo-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 10px;
+}

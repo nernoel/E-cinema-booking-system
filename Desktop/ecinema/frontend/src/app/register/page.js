@@ -9,7 +9,7 @@ export default function Register() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [promoOptIn, setPromoOptIn] = useState(false); // New state for promotion opt-in
+  const [promoOptIn, setPromoOptIn] = useState(false); 
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const router = useRouter();  // Initialize router for redirect

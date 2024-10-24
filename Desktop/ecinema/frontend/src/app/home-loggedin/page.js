@@ -5,12 +5,11 @@ import './home-loggedin.css'; // import the css
 import { useRouter } from 'next/navigation'; // use router for redirection
 
 export default function Home() {
-  // state for movies and search term
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter(); // Initialize router for navigation
 
-  // dummy movie data with valid links
+  // Dummy movie data with valid links
   const dummyMovies = [
     {
       title: "Fantastic Mr. Fox",
@@ -35,7 +34,6 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    // set movies to dummy data
     setMovies(dummyMovies);
   }, []);
 
@@ -48,14 +46,16 @@ export default function Home() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');  // Remove token from localStorage
-    localStorage.removeItem('user');   // Optionally remove user data
-    router.push('/login');  // Redirect to login page after logout
+    if (window.confirm("Are you sure you want to logout?")) {
+        localStorage.removeItem('token');  // Remove token from localStorage
+        localStorage.removeItem('user');   // Optionally remove user data
+        router.push('/login');  // Redirect to login page after logout
+    }
   };
 
   return (
     <div>
-      {/* navigation bar */}
+      {/* Navigation bar */}
       <nav className="navbar">
         <h1 className="logo">E-Cinema</h1>
         <div className="nav-links">
@@ -68,7 +68,7 @@ export default function Home() {
 
       <h1>Welcome to the E-Cinema Booking System</h1>
 
-      {/* search bar */}
+      {/* Search bar */}
       <div>
         <input
           type="text"
@@ -79,7 +79,7 @@ export default function Home() {
         <button onClick={performSearch}>Search</button>
       </div>
 
-      {/* movie categories */}
+      {/* Movie categories */}
       {['Currently Running', 'Coming Soon'].map(category => (
         <div key={category}>
           <h2>{category}</h2>

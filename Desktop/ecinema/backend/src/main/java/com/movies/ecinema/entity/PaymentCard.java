@@ -1,5 +1,7 @@
 package com.movies.ecinema.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,8 +11,6 @@ import lombok.*;
 @Entity
 @Table(name = "payment_cards")
 public class PaymentCard {
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

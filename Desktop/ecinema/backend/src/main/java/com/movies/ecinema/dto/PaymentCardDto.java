@@ -34,4 +34,5 @@ public class PaymentCardDto {
 
         this.cardType = paymentCard.getCardType();
     }
+    
 }

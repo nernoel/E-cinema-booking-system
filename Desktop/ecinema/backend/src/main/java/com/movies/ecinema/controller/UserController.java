@@ -1,6 +1,7 @@
 package com.movies.ecinema.controller;
 
 import com.movies.ecinema.dto.LoginDto;
+import com.movies.ecinema.dto.PaymentCardDto;
 import com.movies.ecinema.dto.UserDto;
 import com.movies.ecinema.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -35,54 +36,42 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    /*
-     * @PutMapping("/{id}")
-     * public ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody
-     * UserDto userDTO) {
-     * UserDto updatedUser = userService.updateUser(id, userDTO);
-     * return ResponseEntity.ok(updatedUser);
-     * }
-     * 
-     * @GetMapping("/{id}")
-     * public ResponseEntity<UserDto> getUserById(@PathVariable long id) {
-     * UserDto userDTO = userService.getUserById(id);
-     * return ResponseEntity.ok(userDTO);
-     * }
-     * 
-     * @GetMapping("/email")
-     * public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
-     * UserDto userDTO = userService.getUserByEmail(email);
-     * return ResponseEntity.ok(userDTO);
-     * }
-     * 
-     * 
-     * @DeleteMapping("/{id}")
-     * public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-     * userService.deleteUser(id);
-     * return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     * }
-     * 
-     * 
-     * @PostMapping("/{userId}/payment-cards")
-     * public ResponseEntity<PaymentCardDto> addPaymentCard(@PathVariable long
-     * userId, @RequestBody PaymentCardDto paymentCardDTO) {
-     * PaymentCardDto newCard = userService.addPaymentCard(userId, paymentCardDTO);
-     * return new ResponseEntity<>(newCard, HttpStatus.CREATED);
-     * }
-     * 
-     * @GetMapping("/{userId}/payment-cards")
-     * public ResponseEntity<List<PaymentCardDto>>
-     * getPaymentCardsForUser(@PathVariable long userId) {
-     * List<PaymentCardDto> paymentCards =
-     * userService.getPaymentCardsForUser(userId);
-     * return ResponseEntity.ok(paymentCards);
-     * }
-     * 
-     * @DeleteMapping("/{userId}/payment-cards/{cardId}")
-     * public ResponseEntity<Void> deletePaymentCard(@PathVariable long
-     * userId, @PathVariable long cardId) {
-     * userService.deletePaymentCard(userId, cardId);
-     * return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-     * }
-     */
+    @PutMapping("/edit-profile")
+    public ResponseEntity<UserDto> updateUserProfile(@RequestBody UserDto userDto) {
+        UserDto updatedUser = userService.updateUserProfile(userDto);
+        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    }
+
+    //@PutMapping("/{id}")
+    //public ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDTO) {
+      //  UserDto updatedUser = userService.updateUser(id, userDTO);
+        //return ResponseEntity.ok(updatedUser);
+    //}
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable long id) {
+        UserDto userDTO = userService.getUserById(id);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/by-email")
+    public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
+        UserDto userDTO = userService.getUserByEmail(email);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping("/by-email")
+    public ResponseEntity<UserDto> updateUserProfile(@RequestParam String email, @RequestBody UserDto userDto) {
+        UserDto updatedUser = userService.updateUserProfileByEmail(email, userDto);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}") 
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+   
+
 }

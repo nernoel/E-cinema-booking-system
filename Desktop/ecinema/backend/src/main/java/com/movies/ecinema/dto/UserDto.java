@@ -2,6 +2,7 @@ package com.movies.ecinema.dto;
 
 import java.util.List;
 
+import com.movies.ecinema.entity.PaymentCard;
 import com.movies.ecinema.entity.User.Role;
 import com.movies.ecinema.entity.User.Status;
 
@@ -23,14 +24,14 @@ public class UserDto {
 
     private Role role;
 
-    private List<PaymentCardDto> paymentCards;
+    private List<PaymentCard> paymentCards;
 
     // No-args constructor
     public UserDto() {
     }
 
     // All-args constructor
-    public UserDto(long id, String firstname, String lastname, String email, String billing_address, String password, Status status, Role role, List<PaymentCardDto> paymentCards) {
+    public UserDto(long id, String firstname, String lastname, String email, String billing_address, String password, Status status, Role role, List<PaymentCard> paymentCards) {
         this.id = id;
 
         this.firstname = firstname;
@@ -115,11 +116,11 @@ public class UserDto {
         this.role = role;
     }
 
-    public List<PaymentCardDto> getPaymentCards() {
+    public List<PaymentCard> getPaymentCards() {
         return paymentCards;
     }
 
-    public void setPaymentCards(List<PaymentCardDto> paymentCards) {
+    public void setPaymentCards(List<PaymentCard> paymentCards) {
         this.paymentCards = paymentCards;
     }
 }

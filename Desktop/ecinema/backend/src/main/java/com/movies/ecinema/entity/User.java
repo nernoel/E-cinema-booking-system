@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.movies.ecinema.dto.PaymentCardDto;
+
 /*
  * Class representing a user object in JPA database
  * User class containing:
@@ -160,11 +162,12 @@ public class User {
         this.role = role;
     }
 
-    public List<PaymentCard> getPaymentCards() {
+    public List<PaymentCard> getPaymentCards() { 
         return paymentCards;
-    }
+     }
 
-    public void setPaymentCards(List<PaymentCard> paymentCards) {
-        this.paymentCards = paymentCards;
+    public void setPaymentCards(List<PaymentCard> list) {
+        this.paymentCards = list;
     }
+    
 }

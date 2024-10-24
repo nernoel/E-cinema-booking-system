@@ -1,120 +1,116 @@
 "use client";
-
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';  // Assuming you're using axios for API calls
-import './edit-profile.css'; // Import CSS for styling
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import './edit-profile.css';
 
 export default function EditProfile() {
-  // State for profile fields
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [currentPasswordEmail, setCurrentPasswordEmail] = useState('');
-
-  // Password change states
+  const [billingAddress, setBillingAddress] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [paymentCards, setPaymentCards] = useState([]);
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cardHolderName, setCardHolderName] = useState('');
+  const router = useRouter();
 
-  // Profile photo
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const [previewPhoto, setPreviewPhoto] = useState(null);
-
-  // Fetch logged-in user profile (useEffect to load user data when component mounts)
+  // Fetch user data and payment cards on component mount
   useEffect(() => {
-    axios.get('/api/user/profile')  // Replace with your API endpoint
-      .then(response => {
-        const { firstName, lastName, email, profilePhotoUrl } = response.data;
-        setFirstName(firstName);
-        setLastName(lastName);
-        setEmail(email);  // Assuming email can't be changed
-        setPreviewPhoto(profilePhotoUrl);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the user profile!", error);
-      });
-  }, []);  // Empty dependency array ensures this runs only once when the component mounts
-
-  // Handle Name change
-  const handleNameChange = async (event) => {
-    event.preventDefault();
-    try {
-      await axios.put('/api/user/update-profile', { firstName, lastName });
-      alert("Profile updated successfully");
-    } catch (error) {
-      console.error("There was an error updating the profile!", error);
-    }
-  };
-
-  // Handle Password change
-  const handlePasswordChange = async (event) => {
-    event.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("New passwords do not match");
-      return;
-    }
-
-    try {
-      await axios.put('/api/user/change-password', {
-        oldPassword,
-        newPassword,
-      });
-      alert("Password updated successfully");
-    } catch (error) {
-      console.error("There was an error changing the password!", error);
-    }
-  };
-
-  // Handle Profile photo change
-  const handlePhotoChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfilePhoto(file);
-      setPreviewPhoto(URL.createObjectURL(file));  // Preview image
-    }
-  };
-
-  const handlePhotoUpload = async (event) => {
-    event.preventDefault();
-    if (profilePhoto) {
-      const formData = new FormData();
-      formData.append("file", profilePhoto);
-      try {
-        await axios.post('/api/user/upload-photo', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+    const storedEmail = localStorage.getItem('userEmail');
+    if (storedEmail) {
+      // Fetch user data
+      axios.get(`http://localhost:8080/api/users/by-email?email=${storedEmail}`)
+        .then((response) => {
+          const userData = response.data;
+          setFirstName(userData.firstname || '');
+          setLastName(userData.lastname || '');
+          setEmail(userData.email || '');
+          setBillingAddress(userData.billingAddress || '');
+          setPaymentCards(userData.paymentCards || []); // Assuming the response includes payment cards
+        })
+        .catch((error) => {
+          console.error('Error fetching user data:', error);
         });
-        alert("Profile photo updated successfully");
-      } catch (error) {
-        console.error("There was an error uploading the profile photo!", error);
-      }
     }
+  }, []);
+
+  // Handle profile update (including payment cards)
+  const handleProfileUpdate = (event) => {
+    event.preventDefault();
+    const storedEmail = localStorage.getItem('userEmail');
+    const updateData = {
+      firstname: firstName,
+      lastname: lastName,
+      billingAddress,
+      paymentCards: paymentCards.map(card => ({
+        cardNumber: card.cardNumber,
+        expiryDate: card.expiryDate,
+        cardHolderName: card.cardHolderName,
+        cardType: "VISA" // Replace with dynamic value if needed
+      }))
+    };
+
+    if (newPassword) {
+      updateData.password = newPassword;
+    }
+
+    axios.put(`http://localhost:8080/api/users/by-email?email=${storedEmail}`, updateData)
+      .then(() => {
+        alert('Profile updated successfully!');
+      })
+      .catch((error) => {
+        console.error('Error updating profile:', error);
+      });
+  };
+
+  // Handle adding a new payment card
+  const handleAddCard = (event) => {
+    event.preventDefault();
+    const storedEmail = localStorage.getItem('userEmail');
+    const newCard = {
+      cardNumber,
+      expiryDate,
+      cardHolderName,
+      cardType: "VISA" // Change this to match user input if necessary
+    };
+
+    axios.post(`http://localhost:8080/api/users/by-email/payment-cards`, newCard) // Use POST to add a new card
+      .then((response) => {
+        setPaymentCards([...paymentCards, response.data]); // Update state with the new card
+        alert('Payment card added successfully!');
+        // Clear input fields
+        setCardNumber('');
+        setExpiryDate('');
+        setCardHolderName('');
+      })
+      .catch((error) => {
+        console.error('Error adding payment card:', error);
+      });
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+    router.push('/login'); // Redirect to login page
   };
 
   return (
     <div className="edit-profile-container">
       <h1>Edit Profile</h1>
+      
+      <div className="current-user-info">
+        <h2>Current User:</h2>
+        <p><strong>Name:</strong> {firstName} {lastName}</p>
+        <p><strong>Email:</strong> {email}</p>
+      </div>
 
-      {/* Change Profile Photo Section */}
-      <form onSubmit={handlePhotoUpload}>
-        <h2>Change Profile Photo</h2>
-        <div className="form-group">
-          <label>Upload New Profile Photo:</label>
-          <input type="file" accept="image/*" onChange={handlePhotoChange} required />
-        </div>
-        {previewPhoto && (
-          <div className="profile-photo-preview">
-            <h3>Preview:</h3>
-            <img src={previewPhoto} alt="Profile Preview" className="photo-preview" />
-          </div>
-        )}
-        <button type="submit">Upload Photo</button>
-      </form>
-
-      {/* Change Name Section */}
-      <form onSubmit={handleNameChange}>
-        <h2>Change Name</h2>
+      <form onSubmit={handleProfileUpdate}>
+        <h2>Change Profile Information</h2>
         <div className="form-group">
           <label>First Name:</label>
           <input
@@ -133,42 +129,12 @@ export default function EditProfile() {
             required
           />
         </div>
-        <button type="submit">Change Name</button>
-      </form>
-
-      {/* Change Email Section (read-only) */}
-      <form>
-        <h2>Change Email</h2>
         <div className="form-group">
-          <label>New Email:</label>
+          <label>Billing Address:</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // Assuming email cannot be changed
-            readOnly
-          />
-        </div>
-        <div className="form-group">
-          <label>Current Password:</label>
-          <input
-            type="password"
-            value={currentPasswordEmail}
-            onChange={(e) => setCurrentPasswordEmail(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Change Email</button>
-      </form>
-
-      {/* Change Password Section */}
-      <form onSubmit={handlePasswordChange}>
-        <h2>Change Password</h2>
-        <div className="form-group">
-          <label>Old Password:</label>
-          <input
-            type="password"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
+            type="text"
+            value={billingAddress}
+            onChange={(e) => setBillingAddress(e.target.value)}
             required
           />
         </div>
@@ -178,7 +144,6 @@ export default function EditProfile() {
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            required
           />
         </div>
         <div className="form-group">
@@ -187,13 +152,57 @@ export default function EditProfile() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+        </div>
+        <button type="submit">Update Profile</button>
+      </form>
+
+      <h2>Your Payment Cards</h2>
+      <ul>
+        {paymentCards.map((card, index) => (
+          <li key={index}>
+            <p>Card Number: {card.cardNumber}</p>
+            <p>Expiry Date: {card.expiryDate}</p>
+            <p>Card Holder Name: {card.cardHolderName}</p>
+          </li>
+        ))}
+      </ul>
+
+      <form onSubmit={handleAddCard}>
+        <h2>Add Payment Card</h2>
+        <div className="form-group">
+          <label>Card Number:</label>
+          <input
+            type="text"
+            value={cardNumber}
+            onChange={(e) => setCardNumber(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Change Password</button>
+        <div className="form-group">
+          <label>Expiry Date:</label>
+          <input
+            type="text"
+            value={expiryDate}
+            onChange={(e) => setExpiryDate(e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Card Holder Name:</label>
+          <input
+            type="text"
+            value={cardHolderName}
+            onChange={(e) => setCardHolderName(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">Add Card</button>
       </form>
 
-      <a href="/" className="back-link">Back to Home</a>
+      <div className="logout-section">
+        <button onClick={handleLogout}>Logout</button>
+      </div>
     </div>
   );
 }
