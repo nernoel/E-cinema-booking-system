@@ -3,16 +3,30 @@
 "use client"; 
 
 import React, { useState } from 'react';
-import './login.css'; // import the css
+import { useRouter } from 'next/navigation'; 
+import './login.css';
 
 export default function Login() {
   const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // login logic 
     console.log('Logging in:', { email, password });
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      router.push('/home-loggedin');
+    } else {
+      console.error('Login failed');
+    }
   };
 
   return (
@@ -40,7 +54,7 @@ export default function Login() {
         <button type="submit">Login</button>
       </form>
       <p>Don't have an account? <a href="/register">Register here</a></p>
-      <a href="/">Back to Home</a> {/* Link back to home */}
+      <a href="/">Back to Home</a>
     </div>
   );
 }

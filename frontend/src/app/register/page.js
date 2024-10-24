@@ -3,6 +3,7 @@
 "use client"; 
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import './register.css'; 
 
 export default function Register() {
@@ -16,50 +17,160 @@ export default function Register() {
     const [cardType, setCardType] = useState('');
     const [cardNumber, setCardNumber] = useState('');
     const [expirationDate, setExpirationDate] = useState('');
-
-    // Billing address fields
+    
+    const [cardholderName, setCardholderName] = useState(''); 
     const [billingAddress1, setBillingAddress1] = useState('');
     const [billingAddress2, setBillingAddress2] = useState('');
     const [billingCity, setBillingCity] = useState('');
     const [billingState, setBillingState] = useState('');
     const [billingZipCode, setBillingZipCode] = useState('');
 
-    // Home address fields
+    
     const [homeAddress1, setHomeAddress1] = useState('');
     const [homeAddress2, setHomeAddress2] = useState('');
     const [homeCity, setHomeCity] = useState('');
     const [homeState, setHomeState] = useState('');
     const [homeZipCode, setHomeZipCode] = useState('');
 
-    const handleRegister = (e) => {
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter(); 
+
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
+    const validatePhoneNumber = (phone) => {
+        const regex = /^[0-9]{10,15}$/;
+        return regex.test(phone);
+    };
+
+    const validatePassword = (password) => {
+        const regex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        return regex.test(password);
+    };
+
+    const validateCardNumber = (number) => {
+        const regex = /^[0-9]{13,19}$/;
+        return regex.test(number);
+    };
+
+    const validateExpirationDate = (date) => {
+        const regex = /^(0[1-9]|1[0-2])\/?([0-9]{2}|[0-9]{4})$/;
+        return regex.test(date);
+    };
+
+    const handleRegister = async (e) => {
         e.preventDefault();
-        // registration logic 
-        console.log('Registering:', { 
-            firstName, 
-            lastName, 
-            email, 
-            phone, 
-            password, 
-            promotions, 
-            cardType, 
-            cardNumber,
-            expirationDate,
-            billingAddress1,
-            billingAddress2,
-            billingCity,
-            billingState,
-            billingZipCode,
-            homeAddress1,
-            homeAddress2,
-            homeCity,
-            homeState,
-            homeZipCode,
-        });
+        setErrorMessage('');
+        
+        if (!firstName || !lastName || !email || !password || !phone) {
+            setErrorMessage('Please fill in all required fields.');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setErrorMessage('Please enter a valid email address.');
+            return;
+        }
+
+        if (!validatePhoneNumber(phone)) {
+            setErrorMessage('Please enter a valid phone number with 10-15 digits.');
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            setErrorMessage('Password must be at least 8 characters long, with at least one capital letter and one special character.');
+            return;
+        }
+
+        // Validate billing info only if at least one billing field is provided
+        if (cardholderName || cardType || cardNumber || expirationDate || billingAddress1 || billingCity || billingState || billingZipCode) {
+            if (!cardholderName) {
+                setErrorMessage('Please enter the cardholder name.');
+                return;
+            }
+
+            if (!cardType) {
+                setErrorMessage('Please enter a card type.');
+                return;
+            }
+
+            if (!validateCardNumber(cardNumber)) {
+                setErrorMessage('Please enter a valid card number (13-19 digits).');
+                return;
+            }
+
+            if (!validateExpirationDate(expirationDate)) {
+                setErrorMessage('Please enter a valid expiration date (MM/YY).');
+                return;
+            }
+
+            if (!billingAddress1 || !billingCity || !billingState || !billingZipCode) {
+                setErrorMessage('Please fill in all billing address fields.');
+                return;
+            }
+        }
+
+        // Validate home address info only if at least one home address field is provided
+        if (homeAddress1 || homeCity || homeState || homeZipCode) {
+            if (!homeAddress1 || !homeCity || !homeState || !homeZipCode) {
+                setErrorMessage('Please fill in all home address fields.');
+                return;
+            }
+        }
+
+        setLoading(true);
+        
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    firstName, 
+                    lastName, 
+                    email, 
+                    phone, 
+                    password, 
+                    promotions, 
+                    cardType, 
+                    cardNumber,
+                    expirationDate,
+                    cardholderName, 
+                    billingAddress1,
+                    billingAddress2,
+                    billingCity,
+                    billingState,
+                    billingZipCode,
+                    homeAddress1,
+                    homeAddress2,
+                    homeCity,
+                    homeState,
+                    homeZipCode,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                setErrorMessage(errorData.message || 'Registration failed. Please try again.');
+            } else {
+                router.push('/register-confirmation'); 
+            }
+        } catch (error) {
+            setErrorMessage('An error occurred. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="register-container">
             <h1>Register</h1>
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
             <form onSubmit={handleRegister}>
                 <div>
                     <input
@@ -118,6 +229,14 @@ export default function Register() {
                 </div>
 
                 <h3>Optional Payment Information</h3>
+                <div>
+                    <input
+                        type="text"
+                        placeholder="Cardholder Name"
+                        value={cardholderName}
+                        onChange={(e) => setCardholderName(e.target.value)}
+                    />
+                </div>
                 <div>
                     <input
                         type="text"
@@ -227,10 +346,17 @@ export default function Register() {
                     />
                 </div>
 
-                <button type="submit">Register</button>
+                <div>
+                    <button type="submit" disabled={loading}>
+                        {loading ? 'Registering...' : 'Register'}
+                    </button>
+                </div>
             </form>
-            <p>Already have an account? <a href="/login">Login here</a></p>
-            <a href="/">Back to Home</a> 
+            <div className="register-links">
+                <a href="/login">Already have an account? Log in</a>
+                <br />
+                <a href="/">Back to Home</a>
+            </div>
         </div>
     );
 }

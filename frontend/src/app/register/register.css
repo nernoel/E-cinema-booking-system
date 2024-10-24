@@ -14,6 +14,7 @@ body {
     padding: 20px;
     background-color: #1e1e1e;
     border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
@@ -37,15 +38,16 @@ input[type="number"] {
     width: 100%;
     margin-bottom: 15px;
     color: black;
+    transition: border-color 0.3s;
 }
 
-select {
-    padding: 10px;
-    border: 1px solid #ffffff;
-    border-radius: 5px;
-    width: 100%;
-    margin-bottom: 15px;
-    color: black;
+input:focus {
+    border-color: #ffcc00;
+    outline: none;
+}
+
+input::placeholder {
+    color: #aaaaaa;
 }
 
 button {
@@ -56,10 +58,22 @@ button {
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
+    transition: background-color 0.3s;
 }
 
 button:hover {
     background-color: #e6b800;
+}
+
+button:disabled {
+    background-color: #999999;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #ff4d4d;
+    margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .checkbox-container {
@@ -81,20 +95,26 @@ a {
 
 a:hover {
     text-decoration: underline;
+    color: #e6b800;
 }
 
-h3 {
-    margin-top: 20px;
-}
-
-.address-field {
+.address-field,
+.name-field {
     margin-bottom: 15px;
 }
 
-.card-info, .address-info {
+.card-info,
+.address-info {
     margin-top: 20px;
     padding: 15px;
     border: 1px solid #ffffff;
     border-radius: 5px;
     background-color: #2a2a2a;
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        max-width: 100%;
+        padding: 15px;
+    }
 }

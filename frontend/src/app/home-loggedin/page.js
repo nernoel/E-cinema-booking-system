@@ -3,9 +3,12 @@
 "use client"; 
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation'; 
 import './home-loggedin.css'; // import the css
 
 export default function Home() {
+  const router = useRouter(); 
+  
   // state for movies and search term
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,6 +50,15 @@ export default function Home() {
     console.log("Searching for:", searchTerm);
   };
 
+  // logout function
+  const handleLogout = () => {
+    // clear user session
+    localStorage.removeItem('userToken'); 
+
+    // redirect to home-loggedout page
+    router.push('/home-loggedout'); 
+  };
+
   return (
     <div>
       {/* navigation bar */}
@@ -56,6 +68,7 @@ export default function Home() {
           <a href="/">Home</a>
           <a href="/book-tickets">Book Tickets</a> {/* Add Book Tickets tab */}
           <a href="/edit-profile">Edit Profile</a> {/* Change here */}
+          <button onClick={handleLogout}>Logout</button> {/* Logout button */}
         </div>
       </nav>
 

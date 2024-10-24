@@ -31,6 +31,11 @@ input[type="password"] {
     color: black; 
 }
 
+input:focus {
+    border-color: #ffcc00; 
+    outline: none; 
+}
+
 button {
     padding: 10px 15px;
     background-color: #ffcc00; 
@@ -53,5 +58,10 @@ a {
 }
 
 a:hover {
-    text-decoration: underline;
+    text-decoration: underline; 
+}
+
+.error-message {
+    color: #ff4d4d; 
+    margin-top: 10px; 
 }
