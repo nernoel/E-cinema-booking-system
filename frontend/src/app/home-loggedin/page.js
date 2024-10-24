@@ -3,18 +3,12 @@
 "use client"; 
 
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
 import { useRouter } from 'next/navigation'; 
 import './home-loggedin.css'; // import the css
 
 export default function Home() {
   const router = useRouter(); 
   
-=======
-import './home-loggedin.css'; // import the css
-
-export default function Home() {
->>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
   // state for movies and search term
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -56,8 +50,7 @@ export default function Home() {
     console.log("Searching for:", searchTerm);
   };
 
-<<<<<<< HEAD
-  // logout function
+  // kogout function
   const handleLogout = () => {
     // clear user session
     localStorage.removeItem('userToken'); 
@@ -66,8 +59,6 @@ export default function Home() {
     router.push('/home-loggedout'); 
   };
 
-=======
->>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
   return (
     <div>
       {/* navigation bar */}
@@ -75,12 +66,9 @@ export default function Home() {
         <h1 className="logo">E-Cinema</h1>
         <div className="nav-links">
           <a href="/">Home</a>
-          <a href="/book-tickets">Book Tickets</a> {/* Add Book Tickets tab */}
-          <a href="/edit-profile">Edit Profile</a> {/* Change here */}
-<<<<<<< HEAD
-          <button onClick={handleLogout}>Logout</button> {/* Logout button */}
-=======
->>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
+          <a href="/book-tickets">Book Tickets</a> 
+          <a href="/edit-profile">Edit Profile</a> 
+          <button onClick={handleLogout}>Logout</button> 
         </div>
       </nav>
 

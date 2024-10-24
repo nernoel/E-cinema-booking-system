@@ -16,7 +16,7 @@ input[type="text"] {
     padding: 10px;
     border: 1px solid #ffffff; 
     border-radius: 5px;
-    width: 200px;
+    width: 300px; 
     margin-right: 10px;
     color: black; 
 }
@@ -28,13 +28,13 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 10px; 
 }
 
 button:hover {
     background-color: #e6b800; 
 }
 
-/* Navigation Bar Styles */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -46,6 +46,7 @@ button:hover {
 
 .nav-links {
     display: flex;
+    align-items: center; 
 }
 
 .nav-links a {

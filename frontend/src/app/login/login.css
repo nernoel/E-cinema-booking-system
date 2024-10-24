@@ -31,14 +31,11 @@ input[type="password"] {
     color: black; 
 }
 
-<<<<<<< HEAD
 input:focus {
     border-color: #ffcc00; 
     outline: none; 
 }
 
-=======
->>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
 button {
     padding: 10px 15px;
     background-color: #ffcc00; 
@@ -61,14 +58,10 @@ a {
 }
 
 a:hover {
-<<<<<<< HEAD
     text-decoration: underline; 
 }
 
 .error-message {
     color: #ff4d4d; 
     margin-top: 10px; 
-=======
-    text-decoration: underline;
->>>>>>> f9678918d058ed6352f97f7b7b6b86906ce01bbe
 }
