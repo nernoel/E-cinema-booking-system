@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';  // import useRouter for redirect
@@ -9,6 +9,7 @@ export default function Register() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [promoOptIn, setPromoOptIn] = useState(false); // New state for promotion opt-in
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const router = useRouter();  // Initialize router for redirect
@@ -25,11 +26,12 @@ export default function Register() {
       lastname: lastName,
       email: email,
       password: password,
+      promoOptIn, // Add promoOptIn to the userData
     };
 
     try {
       // Make POST request to register the user
-      const response = await fetch('http://localhost:8080/api/users', {
+      const response = await fetch('http://localhost:8080/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,6 +55,11 @@ export default function Register() {
       console.error('Error during registration:', error);
       setErrorMessage('Something went wrong. Please try again.');
     }
+  };
+
+  const handlePromoRegistration = () => {
+    // Functionality to handle promotion registration can be implemented here
+    alert(`You have successfully registered for the promotion!`);
   };
 
   return (
@@ -98,8 +105,18 @@ export default function Register() {
             required
           />
         </div>
+        <div className="promotion-checkbox">
+          <input
+            type="checkbox"
+            id="promoOptIn"
+            checked={promoOptIn}
+            onChange={() => setPromoOptIn(!promoOptIn)}
+          />
+          <label htmlFor="promoOptIn">Register for promotion</label>
+        </div>
         <button type="submit">Register</button>
       </form>
+      {/*<button onClick={handlePromoRegistration}>Register for Promotion</button>}*/}
       <p>Already have an account? <a href="/login">Login here</a></p>
       <a href="/">Back to Home</a>
     </div>

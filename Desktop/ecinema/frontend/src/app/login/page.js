@@ -1,38 +1,40 @@
-"use client"; 
+"use client";
 
 import React, { useState } from 'react';
-import './login.css'; // import the css
-import { useRouter } from 'next/navigation'; // use router for redirection
+import axios from 'axios'; // Import axios
+import './login.css';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
-  const [email, setEmail] = useState(''); 
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(''); // To handle errors
-  const router = useRouter(); // Initialize router
+  const [errorMessage, setErrorMessage] = useState('');
+  const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:8080/api/users');
-      const users = await response.json();
+      const response = await axios.post('http://localhost:8080/api/users/login', {
+        email: email,
+        password: password,
+      });
 
-      // Check if the email exists in the users list
-      const user = users.find((user) => user.email === email);
-
-      if (user) {
-        // For now, we assume the password matches since there's no hashed password handling here.
-        // You should match passwords if hashed in real scenarios.
-        console.log('Login successful:', user);
-
-        // Redirect to a desired page on success, e.g., home page or dashboard
-        alert("Login successful!");
-        router.push('/home-loggedin'); // Redirect to dashboard or any page
+      if (response.status === 200) {
+        // Check the role of the user
+        const userRole = response.data.role;
+        if (userRole === 'ADMIN') {
+          alert("Admin login successful!");
+          router.push('/admin-dashboard'); // Redirect to admin page if admin
+        } else {
+          alert("Login successful!");
+          router.push('/home-loggedin'); // Redirect to normal user home page if not admin
+        }
       } else {
         setErrorMessage('Invalid email or password');
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('Error during login:', error);
       setErrorMessage('An error occurred while trying to log in.');
     }
   };
@@ -43,7 +45,7 @@ export default function Login() {
       <form onSubmit={handleLogin}>
         <div>
           <input
-            type="email" 
+            type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -63,7 +65,7 @@ export default function Login() {
       </form>
       {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       <p>Don't have an account? <a href="/register">Register here</a></p>
-      <a href="/">Back to Home</a> {/* Link back to home */}
+      <a href="/">Back to Home</a>
     </div>
   );
 }

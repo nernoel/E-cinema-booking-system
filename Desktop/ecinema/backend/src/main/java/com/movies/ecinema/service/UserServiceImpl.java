@@ -5,49 +5,48 @@ import com.movies.ecinema.dto.LoginDto;
 import com.movies.ecinema.dto.PaymentCardDto;
 import com.movies.ecinema.entity.PaymentCard;
 import com.movies.ecinema.entity.User;
+import com.movies.ecinema.entity.User.Role;
+import com.movies.ecinema.entity.User.Status;
 import com.movies.ecinema.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    
+    private final UserRepository userRepository;
 
-    /* Importing users from JPA repo */
     @Autowired
-    private UserRepository userRepository;
-
+    private EmailService emailService;
    
 
-  
-    // private PaymentCardRepository paymentCardRepository;
+    // Constructor-based injection for final fields
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+      
+    }
 
     @Override
     public UserDto createUser(UserDto userDto) {
         // Call new user constructor
         User user = new User();
 
-        /*
-         * Setting user information from userDto object
-         */ 
+        // Setting user information from userDto object
         user.setFirstname(userDto.getFirstname());
-
         user.setLastname(userDto.getLastname());
-
         user.setEmail(userDto.getEmail());
-
         user.setBillingAddress(userDto.getBillingAddress());
-        
         user.setPassword(userDto.getPassword());
+        user.setStatus(Status.ACTIVE);
+        user.setRole(Role.USER);
 
-        user.setStatus(userDto.getStatus());
-
-        user.setRole(userDto.getRole());
+        String subject = "Registration Confirmation";
+            String body = "Dear " + userDto.getFirstname() + ",\n\nYou have successfully created a new account in.\n\nBest regards,\nYour ECinema Team";
+            emailService.sendConfirmationEmail(userDto.getEmail(), subject, body);
 
         // Save user to JPA repo
         user = userRepository.save(user);
@@ -70,12 +69,8 @@ public class UserServiceImpl implements UserService {
         return mapToDto(user);
     }
 
-    /*
-     * Get all users from the database
-     */
     @Override
     public List<UserDto> getAllUsers() {
-
         // Find all users from user repo
         List<User> users = userRepository.findAll();
 
@@ -85,68 +80,36 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
-    
-
-    /*
-     * Mapping user dto to user object
-     */
     private UserDto mapToDto(User user) {
-        // Create userDto constructor
         UserDto userDto = new UserDto();
 
-        /* 
-         * Set all user information
-         */
+        // Set all user information
         userDto.setId(user.getId());
-
         userDto.setFirstname(user.getFirstname());
-
         userDto.setLastname(user.getLastname());
-
-        user.setPassword(userDto.getPassword());
-
         userDto.setEmail(user.getEmail());
-
         userDto.setBillingAddress(user.getBillingAddress());
-
         userDto.setStatus(user.getStatus());
-
         userDto.setRole(user.getRole());
 
-        /*
-         * Map each payment card via stream to collect users to return list of user
-         * payment cards for each user
-         */
+        // Map each payment card to PaymentCardDto
         List<PaymentCardDto> paymentCards = user.getPaymentCards().stream()
                 .map(this::mapToPaymentCardDto).collect(Collectors.toList());
         userDto.setPaymentCards(paymentCards);
 
-        // Return the data access object
         return userDto;
     }
 
-    /*
-     * Map each payment card to the payment card data object
-     */
     private PaymentCardDto mapToPaymentCardDto(PaymentCard paymentCard) {
-        // Construct payment card dto object
         PaymentCardDto paymentCardDto = new PaymentCardDto();
-        /*
-         * Set payment card information
-         */
         paymentCardDto.setId(paymentCard.getId());
-
         paymentCardDto.setCardNumber(paymentCard.getCardNumber());
-
         paymentCardDto.setCardHolderName(paymentCard.getCardHolderName());
-
         paymentCardDto.setExpiryDate(paymentCard.getExpiryDate());
-
         paymentCardDto.setCardType(paymentCard.getCardType());
-
-        // Return payment card data access object
         return paymentCardDto;
     }
+}
 
     
 
@@ -221,4 +184,3 @@ public class UserServiceImpl implements UserService {
     }
 
      */
-}
