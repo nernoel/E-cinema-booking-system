@@ -20,7 +20,7 @@ export default function Login() {
         password,
       });
 
-      const token = response.data.token; // Adjust according to your API response structure
+      const token = response.data.token; 
       if (rememberMe) {
         localStorage.setItem('authToken', token);
         localStorage.setItem('userEmail', email);

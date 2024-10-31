@@ -1,7 +1,6 @@
 package com.movies.ecinema.controller;
 
 import com.movies.ecinema.dto.LoginDto;
-import com.movies.ecinema.dto.PaymentCardDto;
 import com.movies.ecinema.dto.UserDto;
 import com.movies.ecinema.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +29,40 @@ public class UserController {
         return userService.loginUser(loginDto);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
+    @PostMapping("/validate-password")
+    public ResponseEntity<?> validatePassword(@RequestBody LoginDto passwordValidationDTO) {
+        boolean isValid = userService.validatePassword(passwordValidationDTO);
+        return ResponseEntity.ok().body("{\"valid\": " + isValid + "}");
+    }
+
+
+    @PutMapping("/by-email")
+    public ResponseEntity<UserDto> updateUserProfile(@RequestParam String email, @RequestBody UserDto userDto) {
+        UserDto updatedUser = userService.updateUserProfileByEmail(email, userDto);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @GetMapping("/by-email")
+    public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
+        UserDto userDTO = userService.getUserByEmail(email);
+        return ResponseEntity.ok(userDTO);
+    }
+}
+
+
+   /*
     @PutMapping("/edit-profile")
     public ResponseEntity<UserDto> updateUserProfile(@RequestBody UserDto userDto) {
         UserDto updatedUser = userService.updateUserProfile(userDto);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+    
 
     //@PutMapping("/{id}")
     //public ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDTO) {
@@ -54,24 +76,12 @@ public class UserController {
         return ResponseEntity.ok(userDTO);
     }
 
-    @GetMapping("/by-email")
-    public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
-        UserDto userDTO = userService.getUserByEmail(email);
-        return ResponseEntity.ok(userDTO);
-    }
-
-    @PutMapping("/by-email")
-    public ResponseEntity<UserDto> updateUserProfile(@RequestParam String email, @RequestBody UserDto userDto) {
-        UserDto updatedUser = userService.updateUserProfileByEmail(email, userDto);
-        return ResponseEntity.ok(updatedUser);
-    }
-
     @DeleteMapping("/{id}") 
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-   
 
 }
+  */

@@ -9,5 +9,5 @@ import com.movies.ecinema.entity.Movie;
 public interface MovieService {
     List<Movie> getAllMovies();
     Movie addMovie(Movie movie);
-    // void deleteMovie(Long id);
+    //void deleteMovie(Long id);
 }

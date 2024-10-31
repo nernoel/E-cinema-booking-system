@@ -6,6 +6,13 @@ import com.movies.ecinema.entity.PaymentCard;
 import com.movies.ecinema.entity.User.Role;
 import com.movies.ecinema.entity.User.Status;
 
+import lombok.*;
+
+@Setter 
+
+@NoArgsConstructor 
+@AllArgsConstructor 
+
 public class UserDto {
 
     private long id;
@@ -16,7 +23,7 @@ public class UserDto {
 
     private String email;
 
-    private String billing_address;
+    private String billingAddress;
 
     private String password;
 
@@ -26,101 +33,48 @@ public class UserDto {
 
     private List<PaymentCard> paymentCards;
 
-    // No-args constructor
-    public UserDto() {
-    }
-
-    // All-args constructor
-    public UserDto(long id, String firstname, String lastname, String email, String billing_address, String password, Status status, Role role, List<PaymentCard> paymentCards) {
-        this.id = id;
-
-        this.firstname = firstname;
-
-        this.lastname = lastname;
-
-        this.email = email;
-
-        this.billing_address = billing_address;
-
-        this.password = password;
-
-        this.status = status;
-
-        this.role = role;
-
-        this.paymentCards = paymentCards;
-    }
-
-    // Getters and Setters
+    // Getter for id
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
+    // Getter for firstname
     public String getFirstname() {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
+    // Getter for lastname
     public String getLastname() {
         return lastname;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
+    // Getter for email
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
+    // Getter for billingAddress
     public String getBillingAddress() {
-        return billing_address;
+        return billingAddress;
     }
 
-    public void setBillingAddress(String billing_address) {
-        this.billing_address = billing_address;
-    }
-
+    // Getter for password
     public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    // Getter for status
     public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
+    // Getter for role
     public Role getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
+    // Getter for paymentCards
     public List<PaymentCard> getPaymentCards() {
         return paymentCards;
-    }
-
-    public void setPaymentCards(List<PaymentCard> paymentCards) {
-        this.paymentCards = paymentCards;
     }
 }

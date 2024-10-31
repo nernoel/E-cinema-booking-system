@@ -1,7 +1,6 @@
-'use client'
-
+"use client";
 import React, { useState } from "react";
-import '../styles/admin.css'
+import '../styles/admin.css';
 
 const AdminDashboard = () => {
   return (
@@ -123,11 +122,20 @@ const ManagePromotions = () => {
 };
 
 const AdminMainMenu = () => {
+  const handleLogout = () => {
+    // Clear the local session token (or other state indicating the user is logged in)
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+    // Optionally, you can clear any other session data as needed
+    window.location.href = "/login"; // Redirect to the login page
+  };
+
   return (
     <div>
       <AdminDashboard />
       <ManageMovies />
       <ManagePromotions />
+      <button className="logout-button" onClick={handleLogout}>Logout</button>
     </div>
   );
 };

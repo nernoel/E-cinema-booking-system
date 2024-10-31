@@ -1,5 +1,5 @@
 /*
- * Movie repositoryt to interact with the database
+ * Movie repository to interact with the database
  * Extends JPA imported repository
  */
 package com.movies.ecinema.repository;

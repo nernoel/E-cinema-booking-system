@@ -3,10 +3,10 @@ package com.movies.ecinema.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter // Create setter methods
-@Getter // Create getter methods
-@NoArgsConstructor // create default constructor
-@AllArgsConstructor // create all args constructor
+@Setter 
+@Getter
+@NoArgsConstructor 
+@AllArgsConstructor 
 
 // Mapping to database table
 @Entity
@@ -15,29 +15,18 @@ public class Movie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
-    // Movie title
+    private long id;
 
     private String title;
 
-    // Movie genre
-    // @Column(nullable = false)
     private String genre;
-
-    // Movie runtime
 
     private int runtime;
 
-    // Movie description
-
     private String description;
 
-    // Movie image link
-
     private String moviePosterLink;
-
-    // Movie release date
 
     private String releaseDate;
 
