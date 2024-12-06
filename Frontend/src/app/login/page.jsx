@@ -11,7 +11,6 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
-  const userId = "";
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
