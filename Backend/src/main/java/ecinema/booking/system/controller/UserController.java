@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/users")
@@ -27,19 +26,12 @@ public class UserController {
         UserDto newUser = userService.createUser(userDTO);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-      //  try {
-            UserDto userDto = userService.loginUser(loginDto);
-            return ResponseEntity.ok(userDto);
-        //} catch (IllegalArgumentException ex) {
-          //  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
-        //} catch (Exception ex) {
-           // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred during login.");
-       // }
-        
+        UserDto userDto = userService.loginUser(loginDto);
+        return ResponseEntity.ok(userDto);
     }
-    
 
     @GetMapping("/all")
     public ResponseEntity<List<UserDto>> getAllUsers() {
@@ -57,8 +49,33 @@ public class UserController {
     public ResponseEntity<UserDto> updatePromoStatus(
         @PathVariable Long userId, @RequestBody UserDto userDto) {
         UserDto updatedUser = userService.updatePromoStatusById(userId, userDto);
-    return ResponseEntity.ok(updatedUser);
+        return ResponseEntity.ok(updatedUser);
     }
+
+    // New method for editing user profile
+    @PutMapping("/{userId}/edit-profile")
+    public ResponseEntity<UserDto> editProfile(
+        @PathVariable Long userId, @RequestBody UserDto userDto) {
+        UserDto updatedUser = userService.editProfile(userId, userDto);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // Fetch user information by email
+    @GetMapping("/by-email") 
+    public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
+        UserDto userDto = userService.getUserByEmail(email);
+        if (userDto != null) {
+            return ResponseEntity.ok(userDto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PutMapping("/edit-profile/by-email")
+    public ResponseEntity<UserDto> updateProfileByEmail(@RequestParam String email, @RequestBody UserDto userDto) {
+    UserDto updatedUser = userService.updateProfileByEmail(email, userDto);
+    return ResponseEntity.ok(updatedUser);
+}
 
 
 }

@@ -18,10 +18,15 @@ public interface UserService {
     // Get a user via email address
     Long getUserIdByEmail(String email);
 
+    public UserDto getUserByEmail(String email);
+
     // Update user promo status
     UserDto updatePromoStatusById(Long userId, UserDto userDto);
 
     // Update user active status in the database
     boolean updateUserStatusToActive(String email);
 
+    public UserDto editProfile(Long userId, UserDto userDto);
+
+    public UserDto updateProfileByEmail(String email, UserDto userDto);
 }
