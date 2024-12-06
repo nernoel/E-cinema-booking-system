@@ -1,9 +1,12 @@
 package ecinema.booking.system.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 public class EmailRequestDto {
 
+    @JsonProperty("email")
     private String email;
 
+    @JsonProperty("verificationCode")
     private String verificationCode;
 
     public String getEmail() {

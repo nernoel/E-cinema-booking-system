@@ -4,7 +4,6 @@
  */
 
  package ecinema.booking.system.repository;
-
  import ecinema.booking.system.entity.User;
  
  import org.springframework.data.jpa.repository.JpaRepository;

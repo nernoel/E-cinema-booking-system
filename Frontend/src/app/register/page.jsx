@@ -22,95 +22,82 @@ export default function Register() {
     // Handle user registration
     const handleRegister = async (e) => {
         e.preventDefault();
-
-        // Reset messages
         setErrorMessage("");
         setSuccessMessage("");
 
-        const userData = {
-            firstname: firstName,
-            lastname: lastName,
-            email: email,
-            password: password,
-        };
+        const userData = { firstname: firstName, lastname: lastName, email, password };
 
         try {
-            // Register the user
             const response = await axios.post("http://localhost:8080/api/users/register", userData);
 
             if (response.status === 201) {
                 setSuccessMessage("Registration successful! A verification code has been sent to your email.");
                 setUserId(response.data.id);
-                setIsCodeSent(true); // Show the verification form
+                setIsCodeSent(true);
 
-                // Send the confirmation email
                 await handleSendEmailConfirmation();
 
-                // Handle promo registration if opted in
                 if (promoOptIn) {
                     await handlePromoRegistration(response.data.id);
                 }
             }
         } catch (error) {
-            console.error("Error during registration:", error);
-            setErrorMessage(error.response?.data?.message || "Something went wrong. Please try again.");
+            setErrorMessage(error.response?.data?.message || "Registration failed. Please try again.");
         }
     };
 
-    // Handle email confirmation
+    // Send email confirmation
     const handleSendEmailConfirmation = async () => {
-        setErrorMessage("");
-        setSuccessMessage("");
-
         try {
-            const emailResponse = await axios.post("http://localhost:8080/api/send-confirmation-email", {
-                email,
-            });
-
-            if (emailResponse.status === 200) {
+            const response = await axios.post("http://localhost:8080/api/send-confirmation-email", { email });
+            if (response.status === 200) {
+                console.log("Verification Code:", response.data.verificationCode); // Debugging only
                 setSuccessMessage("Verification email sent successfully. Please check your inbox.");
             }
         } catch (error) {
-            console.error("Error during email confirmation:", error);
-            setErrorMessage("Failed to send email confirmation. Please try again later.");
+            setErrorMessage("Failed to send verification email. Please try again.");
         }
     };
 
     // Handle promo registration
     const handlePromoRegistration = async (userId) => {
         try {
-            await axios.put(`http://localhost:8080/api/users/${userId}/promo-status`, {
-                promoStatus: "SUBSCRIBED",
-            });
+            await axios.put(`http://localhost:8080/api/users/${userId}/promo-status`, { promoStatus: "SUBSCRIBED" });
         } catch (error) {
-            console.error("Error during promo registration:", error);
-            setErrorMessage("Failed to register for promotion. Please try again later.");
+            setErrorMessage("Failed to register for promotions.");
         }
     };
 
-    // Handle verify code
+    // Handle verification code
     const handleVerifyCode = async (e) => {
-        e.preventDefault(); // Prevent form submission default behavior
-        setErrorMessage(""); // Clear previous error messages
+        e.preventDefault();
+        setErrorMessage("");
+        setSuccessMessage("");
 
         if (!verificationCode.trim()) {
-            setErrorMessage("Please enter a verification code.");
+            setErrorMessage("Please enter the verification code.");
             return;
         }
 
         try {
-            const response = await axios.post("http://localhost:8080/api/verify-code", {
-                email,
-                verificationCode,
+            // Fetch the stored code (for comparison)
+            const fetchCodeResponse = await axios.get("http://localhost:8080/api/get-verification-code", {
+                params: { email },
             });
+            const serverCode = fetchCodeResponse.data.verificationCode;
 
-            if (response.status === 200) {
-                setSuccessMessage("Code verified successfully!");
-                router.push("/login"); // Redirect to login or another page upon success
+            // Verify if codes match
+            if (serverCode === verificationCode) {
+                const verifyResponse = await axios.post("http://localhost:8080/api/verify-code", { email });
+                if (verifyResponse.status === 200) {
+                    setSuccessMessage("Verification successful! Redirecting...");
+                    setTimeout(() => router.push("/login"), 2000);
+                }
+            } else {
+                setErrorMessage("Invalid verification code. Please try again.");
             }
         } catch (error) {
-            console.error("Error during code verification:", error);
-            setErrorMessage("Failed to verify code. Please try again later.");
+            setErrorMessage("Failed to verify the code. Please try again.");
         }
     };
 
@@ -181,7 +168,7 @@ export default function Register() {
                             required
                         />
                     </div>
-                    <button type="submit" disabled={!verificationCode.trim() || !isCodeSent}>
+                    <button type="submit" disabled={!verificationCode.trim()}>
                         Verify
                     </button>
                 </form>

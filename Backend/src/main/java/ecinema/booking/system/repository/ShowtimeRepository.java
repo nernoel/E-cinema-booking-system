@@ -3,6 +3,7 @@ package ecinema.booking.system.repository;
 import ecinema.booking.system.entity.Showtime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 

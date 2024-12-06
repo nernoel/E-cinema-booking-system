@@ -11,5 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     List<Movie> findByGenreContainingIgnoreCase(String genre);
-     MovieDto getMovieById(Long id); 
+
+    MovieDto getMovieById(Long id);
 }

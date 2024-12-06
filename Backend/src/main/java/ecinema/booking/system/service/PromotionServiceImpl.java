@@ -1,12 +1,8 @@
 package ecinema.booking.system.service;
 
-import ecinema.booking.system.dto.MovieDto;
 import ecinema.booking.system.dto.PromotionDto;
-import ecinema.booking.system.dto.UserDto;
-import ecinema.booking.system.entity.Movie;
 import ecinema.booking.system.entity.Promotion;
 import ecinema.booking.system.entity.User;
-import ecinema.booking.system.repository.MovieRepository;
 import ecinema.booking.system.repository.PromotionRepository;
 import ecinema.booking.system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

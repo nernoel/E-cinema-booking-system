@@ -73,32 +73,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-public UserDto loginUser(LoginDto loginDto) {
-    // Find user by email
-    User user = userRepository.findByEmail(loginDto.getEmail());
+    public UserDto loginUser(LoginDto loginDto) {
+        // Find user by email
+        User user = userRepository.findByEmail(loginDto.getEmail());
 
-    // Check if user exists
-    if (user == null) {
-        throw new IllegalArgumentException("Invalid email or password");
-    }
+        // Check if user exists
+        if (user == null) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
 
-    // Check if account is inactive
-    if (user.getStatus() == User.Status.INACTIVE) {
-        throw new IllegalArgumentException("Account is inactive. Please contact support.");
-    }
+        // Check if account is inactive
+        if (user.getStatus() == User.Status.INACTIVE) {
+            throw new IllegalArgumentException("Account is inactive. Please contact support.");
+        }
 
-    // Verify password using BCryptPasswordEncoder
-    if (!bCryptPasswordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
-        throw new IllegalArgumentException("Invalid email or password");
-    }
+        // Verify password using BCryptPasswordEncoder
+        if (!bCryptPasswordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password");
+        }
 
-    user.setStatus(User.Status.ACTIVE); 
-    userRepository.save(user);
+        user.setStatus(User.Status.ACTIVE); 
+        userRepository.save(user);
 
-    // Map the user entity to a DTO
-    return modelMapper.map(user, UserDto.class);
-    // userDto.setRole(user.getRole()); // Add user role if required
-    // return userDto;
+        // Map the user entity to a DTO
+        return modelMapper.map(user, UserDto.class);
+        // userDto.setRole(user.getRole()); // Add user role if required
+        // return userDto;
 }
 
 

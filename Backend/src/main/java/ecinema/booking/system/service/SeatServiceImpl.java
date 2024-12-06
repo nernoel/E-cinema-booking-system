@@ -7,7 +7,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ecinema.booking.system.dto.SeatDto;
-import ecinema.booking.system.dto.ShowroomDto;
 import ecinema.booking.system.entity.Seat;
 import ecinema.booking.system.entity.Showtime;
 import ecinema.booking.system.repository.SeatRepository;

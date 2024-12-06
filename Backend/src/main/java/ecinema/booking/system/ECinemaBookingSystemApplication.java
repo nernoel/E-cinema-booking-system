@@ -13,8 +13,10 @@ import org.modelmapper.ModelMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 //import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication //(exclude={SecurityAutoConfiguration.class})
+@EnableTransactionManagement
+@SpringBootApplication(exclude={SecurityAutoConfiguration.class})
 //@EnableJpaRepositories(basePackages = "ecinema.booking.system.repository")
 public class ECinemaBookingSystemApplication {
 
@@ -36,7 +38,7 @@ public class ECinemaBookingSystemApplication {
 		System.setProperty("SMTP_PASS", dotenv.get("SMTP_PASS"));
 		System.setProperty("SMTP_USER", dotenv.get("SMTP_USER"));
 
-		System.setProperty("SENDER_ADDRESS", dotenv.get("SENDER_ADDRESS"));
+		//System.setProperty("SENDER_ADDRESS", dotenv.get("SENDER_ADDRESS"));
 		
 
 		// Running the spring application
