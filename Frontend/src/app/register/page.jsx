@@ -15,7 +15,10 @@ export default function Register() {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [isCodeSent, setIsCodeSent] = useState(false);
-    const [verificationCode, setVerificationCode] = useState("");
+
+    const [fetchedVerificationCode, setFetchedVerificationCode] = useState("");
+    const [userInputVerificationCode, setUserInputVerificationCode] = useState("")
+
     const [userId, setUserId] = useState("");
     const router = useRouter();
 
@@ -46,18 +49,34 @@ export default function Register() {
         }
     };
 
-    // Send email confirmation
-    const handleSendEmailConfirmation = async () => {
-        try {
-            const response = await axios.post("http://localhost:8080/api/send-confirmation-email", { email });
-            if (response.status === 200) {
-                console.log("Verification Code:", response.data.verificationCode); // Debugging only
-                setSuccessMessage("Verification email sent successfully. Please check your inbox.");
-            }
-        } catch (error) {
-            setErrorMessage("Failed to send verification email. Please try again.");
+// Send email confirmation
+const handleSendEmailConfirmation = async () => {
+    try {
+        // Send email confirmation
+        const response1 = await axios.post("http://localhost:8080/api/send-confirmation-email", { email });
+        
+        // Retrieve the verification code using URL parameters
+        const response2 = await axios.post(`http://localhost:8080/api/get-verification-code?email=${encodeURIComponent(email)}`);
+
+        // Check if both requests were successful
+        if (response1.status === 200 && response2.status === 200) {
+            console.log("Verification Code:", response2.data); // Debugging only
+            console.log("Verification Code data type is:", typeof response2.data); // Debugging only
+
+            // Update state with the fetched verification code
+            setFetchedVerificationCode(response2.data);
+            console.log("Updated Verification Code:", fetchedVerificationCode); // Debugging only
+            console.log("Updated Verification Code data type is:", typeof fetchedVerificationCode); // Debugging only
+
+            setSuccessMessage("Verification email sent successfully. Please check your inbox.");
         }
-    };
+    } catch (error) {
+        console.error("Error during email confirmation process:", error); // Log the error
+        setErrorMessage("Failed to send verification email. Please try again.");
+    }
+};
+
+
 
     // Handle promo registration
     const handlePromoRegistration = async (userId) => {
@@ -68,39 +87,56 @@ export default function Register() {
         }
     };
 
-    // Handle verification code
     const handleVerifyCode = async (e) => {
         e.preventDefault();
         setErrorMessage("");
         setSuccessMessage("");
-
-        if (!verificationCode.trim()) {
+    
+        if (!userInputVerificationCode.trim()) {
             setErrorMessage("Please enter the verification code.");
             return;
         }
-
+    
         try {
-            // Fetch the stored code (for comparison)
-            const fetchCodeResponse = await axios.get("http://localhost:8080/api/get-verification-code", {
-                params: { email },
+            // Verify the code by sending email and input verification code
+            const verifyResponse = await axios.post("http://localhost:8080/api/verify-code", {
+                email,
+                verificationCode: userInputVerificationCode, // Ensure key matches DTO field name
             });
-            const serverCode = fetchCodeResponse.data.verificationCode;
+    
+            if (verifyResponse.status === 200) {
+                setSuccessMessage("Verification successful! Redirecting...");
+                setTimeout(() => router.push("/login"), 2000);
+            }
+        } catch (error) {
+            console.error("Error verifying code:", error); // Debugging
+            setErrorMessage("Failed to verify the code. Please try again.");
+        }
+    };
+    
 
+    /*
+
+        if (!userInputVerificationCode.trim()) {
+            setErrorMessage("Please enter the verification code.");
+            return;
+        }
             // Verify if codes match
-            if (serverCode === verificationCode) {
+            try{
+            //if (fetchedVerificationCode === userInputVerificationCode) {
                 const verifyResponse = await axios.post("http://localhost:8080/api/verify-code", { email });
                 if (verifyResponse.status === 200) {
                     setSuccessMessage("Verification successful! Redirecting...");
                     setTimeout(() => router.push("/login"), 2000);
                 }
-            } else {
-                setErrorMessage("Invalid verification code. Please try again.");
-            }
-        } catch (error) {
-            setErrorMessage("Failed to verify the code. Please try again.");
-        }
+            /*} else {
+               setErrorMessage("Invalid verification code. Please try again.");
+            //}
+       // } catch (error) {
+           // setErrorMessage("Failed to verify the code. Please try again.");
+      //  }
     };
-
+    */
     return (
         <div className="register-container">
             <h1>Create account</h1>
@@ -163,12 +199,12 @@ export default function Register() {
                         <input
                             type="text"
                             placeholder="Verification Code"
-                            value={verificationCode}
-                            onChange={(e) => setVerificationCode(e.target.value)}
+                            value={userInputVerificationCode}
+                            onChange={(e) => setUserInputVerificationCode(e.target.value)}
                             required
                         />
                     </div>
-                    <button type="submit" disabled={!verificationCode.trim()}>
+                    <button type="submit" disabled={!userInputVerificationCode.trim()}>
                         Verify
                     </button>
                 </form>

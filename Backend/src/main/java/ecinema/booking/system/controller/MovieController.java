@@ -17,6 +17,7 @@ import ecinema.booking.system.service.MovieService;
 public class MovieController {
 
     private final MovieService movieService;
+
     private final MovieRepository movieRepository;
 
     public MovieController(MovieService movieService, MovieRepository movieRepository) {

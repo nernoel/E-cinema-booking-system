@@ -1,16 +1,11 @@
 package ecinema.booking.system.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-
-public class EmailRequestDto {
-    @NotBlank
-    @Email
+// DTO Class
+public class VerificationRequestDto {
     private String email;
-    
-    private String verificationCode; // If needed
+    private String verificationCode;
 
-    // Getters and setters
+    // Getters and Setters
     public String getEmail() {
         return email;
     }

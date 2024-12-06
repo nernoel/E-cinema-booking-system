@@ -7,15 +7,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
-
-import ecinema.booking.system.entity.Promotion;
-import ecinema.booking.system.entity.User;
 import ecinema.booking.system.entity.VerificationCode;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 
 import ecinema.booking.system.repository.VerificationCodeRepository;
 
@@ -24,6 +21,7 @@ import ecinema.booking.system.service.EmailService;
 import ecinema.booking.system.service.UserService;
 import ecinema.booking.system.dto.EmailRequestDto;
 import ecinema.booking.system.dto.UserDto;
+import ecinema.booking.system.dto.VerificationRequestDto;
 
 import java.time.LocalDateTime;
 
@@ -47,58 +45,57 @@ public class EmailController {
     @Autowired
     private VerificationCodeRepository verificationCodeRepository;
 
-    @GetMapping("api/get-verification-code")
-    public ResponseEntity<String> getVerificationCode(@RequestBody EmailRequestDto emailRequest) {
-        String email = emailRequest.getEmail();
+    @PostMapping("api/get-verification-code")
+    public ResponseEntity<String> getVerificationCode(@RequestParam("email") String email) {
+    // Retrieve the verification code from the database
+    Optional<VerificationCode> storedCodeOptional = verificationService.findByEmail(email);
 
-        // Retrieve the verification code from the database
-        Optional<VerificationCode> storedCodeOptional = verificationService.findByEmail(email);
-
-        if (storedCodeOptional.isEmpty()) {
-            return ResponseEntity.status(404).body("Verification code not found for the provided email.");
-        }
-
-        VerificationCode storedCode = storedCodeOptional.get();
-
-        return ResponseEntity.ok(storedCode.getVerificationCode());
+    if (storedCodeOptional.isEmpty()) {
+        return ResponseEntity.status(404).body("Verification code not found for the provided email.");
     }
 
+    VerificationCode storedCode = storedCodeOptional.get();
+
+    return ResponseEntity.ok(storedCode.getVerificationCode());
+}
 
     @PostMapping("api/verify-code")
-    public ResponseEntity<String> verifyCode(@RequestBody EmailRequestDto emailRequest) {
-        String email = emailRequest.getEmail();
-        String verificationCode = emailRequest.getVerificationCode();
+public ResponseEntity<String> verifyCode(@RequestBody VerificationRequestDto verificationRequest) {
+    String email = verificationRequest.getEmail();
+    String verificationCode = verificationRequest.getVerificationCode();
 
-        // Retrieve the verification code from the database
-        Optional<VerificationCode> storedCodeOptional = verificationService.findByEmail(email);
+    // Retrieve the verification code from the database
+    Optional<VerificationCode> storedCodeOptional = verificationService.findByEmail(email);
 
-        if (storedCodeOptional.isEmpty()) {
-            return ResponseEntity.status(400).body("Verification code not found.");
-        }
-
-        VerificationCode storedCode = storedCodeOptional.get();
-
-        // Check if the code is expired
-        if (verificationService.isCodeExpired(storedCode)) {
-            return ResponseEntity.status(400).body("Verification code has expired.");
-        }
-
-        // Verify the code matches
-        if (!storedCode.getVerificationCode().equals(verificationCode)) {
-            return ResponseEntity.status(400).body("Invalid verification code.");
-        }
-
-        // Update the user status to ACTIVE
-        boolean isUpdated = userService.updateUserStatusToActive(email);
-        if (!isUpdated) {
-            return ResponseEntity.status(500).body("Failed to update user status.");
-        }
-
-        // Delete the verification code
-        verificationService.deleteVerificationCode(email);
-
-        return ResponseEntity.ok("Verification successful. User status updated to ACTIVE.");
+    if (storedCodeOptional.isEmpty()) {
+        return ResponseEntity.status(400).body("Verification code not found.");
     }
+
+    // Get the stored code
+    VerificationCode storedCode = storedCodeOptional.get();
+
+    // Check if the code is expired
+    if (verificationService.isCodeExpired(storedCode)) {
+        return ResponseEntity.status(400).body("Verification code has expired.");
+    }
+
+    // Verify the code matches
+    if (!storedCode.getVerificationCode().equals(verificationCode)) {
+        return ResponseEntity.status(400).body("Invalid verification code.");
+    }
+
+    // Update the user status to ACTIVE
+    boolean isUpdated = userService.updateUserStatusToActive(email);
+    if (!isUpdated) {
+        return ResponseEntity.status(500).body("Failed to update user status.");
+    }
+
+    // Delete the verification code
+    verificationService.deleteVerificationCode(email);
+
+    return ResponseEntity.ok("Verification successful. User status updated to ACTIVE.");
+}
+
 
     
 
