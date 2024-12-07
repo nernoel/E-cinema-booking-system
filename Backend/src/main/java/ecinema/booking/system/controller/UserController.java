@@ -100,6 +100,16 @@ public ResponseEntity<UserDto> getUserByEmail(@RequestParam String email) {
     }
 }
 
+/*
+ * Edit user profile using email
+ */
+@PutMapping("/edit-profile/by-email")
+     public ResponseEntity<UserDto> updateProfileByEmail(@RequestParam String
+     email, @RequestBody UserDto userDto) {
+     UserDto updatedUser = userService.updateProfileByEmail(email, userDto);
+     return ResponseEntity.ok(updatedUser);
+     }
+
 
 
     /*

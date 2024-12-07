@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
+
+import ecinema.booking.system.entity.Order;
 import ecinema.booking.system.entity.Promotion;
 import ecinema.booking.system.entity.User;
 
@@ -61,6 +63,29 @@ public class EmailService {
         message.setFrom(senderAddress);
         message.setTo(recipientEmail);
         message.setSubject("Confirmation Email");
+        message.setText(messageContent);
+
+        emailSender.send(message);
+    }
+
+    // Send order confirmation email
+    public void sendOrderConfirmationEmail(Order order, User user) {
+        String subject = "Order Confirmation - eCinema";
+        String messageContent = "Dear " + user.getFirstname() + ",\n\n"
+                + "Thank you for your order! Here are the details:\n\n"
+                + "Order ID: " + order.getId() + "\n"
+                + "Movie: " + order.getMovie().getTitle() + "\n"
+                + "Tickets: " + order.getTickets() + "\n"
+                + "Total Amount: $" + order.getTotalAmount() + "\n"
+                + "Order Date: " + order.getOrderDate() + "\n\n"
+                + "Enjoy your movie!\n"
+                + "Best Regards,\n"
+                + "The eCinema Team";
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(senderAddress);
+        message.setTo(user.getEmail());
+        message.setSubject(subject);
         message.setText(messageContent);
 
         emailSender.send(message);

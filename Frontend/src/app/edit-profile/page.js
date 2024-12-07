@@ -77,7 +77,7 @@ export default function EditProfile() {
       .put(`http://localhost:8080/api/users/edit-profile/by-email?email=${storedEmail}`, updateData)
       .then(() => {
         alert("Profile information updated successfully!");
-        router.push("/profile"); // Redirect back to profile or another page
+        //router.push("/profile"); // Redirect back to profile or another page
       })
       .catch((error) => {
         console.error("Error updating profile information:", error);
@@ -105,35 +105,51 @@ export default function EditProfile() {
       .put(`http://localhost:8080/api/users/by-email?email=${storedEmail}`, { password: newPassword })
       .then(() => {
         alert("Password updated successfully!");
-        router.push("/profile"); // Redirect back to profile or another page
+        //router.push("/profile"); // Redirect back to profile or another page
       })
       .catch((error) => {
         console.error("Error updating password:", error);
       });
   };
 
-  // Handle adding a new payment card
   const handleAddCard = (event) => {
     event.preventDefault();
-
+  
+    // Prevent adding more than 4 payment cards
     if (user.paymentCards.length >= 4) {
       alert("You can only add up to 4 payment cards.");
       return;
     }
-
+  
+    // Create a new card object
     const newCard = {
-      cardName,
-      number,
+      cardHolder: cardName,
+      cardNumber: number,
       securityCode,
       expiryDate,
       cardType,
+      userId: user.id, // Assume `user.id` holds the current user's ID
     };
-
-    setUser((prevState) => ({
-      ...prevState,
-      paymentCards: [...prevState.paymentCards, newCard],
-    }));
-
+  
+    // Send the new payment card to the backend
+    axios
+      .post(`http://localhost:8080/api/payment-cards/add`, newCard)
+      .then((response) => {
+        // Get the newly added card from the response
+        const addedCard = response.data;
+  
+        // Update the local user state with the new card
+        setUser((prevState) => ({
+          ...prevState,
+          paymentCards: [...prevState.paymentCards, addedCard],
+        }));
+  
+        alert("Payment card added successfully!");
+      })
+      .catch((error) => {
+        console.error("Error adding payment card:", error);
+      });
+  
     // Clear input fields
     setCardName("");
     setNumber("");
@@ -141,6 +157,8 @@ export default function EditProfile() {
     setExpiryDate("");
     setCardType("");
   };
+  
+  
 
   // Handle logout
   const handleLogout = () => {
@@ -156,7 +174,7 @@ export default function EditProfile() {
       <h1>Edit Profile</h1>
 
       <div className="current-user-info">
-        <h2>Current User:</h2>
+        <h2 className="current-user-text">Current User:</h2>
         <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
         <p><strong>Email:</strong> {user.email}</p>
         <p><strong>Billing Address:</strong> {user.billingAddress}</p>
@@ -227,11 +245,11 @@ export default function EditProfile() {
         {user.paymentCards.length > 0 ? (
           user.paymentCards.map((card, index) => (
             <li key={index}>
-              <p>Card Name: {card.cardName}</p>
-              <p>Card Number: {card.number}</p>
-              <p>Expiry Date: {card.expiryDate}</p>
-              <p>Security Code: {card.securityCode}</p>
-              <p>Card Type: {card.cardType}</p>
+              <p className="payment-card-info">Card Name: {card.cardHolder}</p>
+              <p className="payment-card-info">Card Number: **** **** **** {card.cardNumber.slice(-4)}</p>
+              <p className="payment-card-info">Expiry Date: {card.expiryDate}</p>
+              <p className="payment-card-info">Security Code: {card.securityCode}</p>
+              <p className="payment-card-info">Card Type: {card.cardType}</p>
             </li>
           ))
         ) : (

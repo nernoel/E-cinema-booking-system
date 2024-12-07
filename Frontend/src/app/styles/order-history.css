@@ -1,0 +1,24 @@
+.order-history-container {
+    padding: 20px;
+  }
+  
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .order-table th, .order-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .order-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .order-table td {
+    background-color: #fff;
+  }
+  

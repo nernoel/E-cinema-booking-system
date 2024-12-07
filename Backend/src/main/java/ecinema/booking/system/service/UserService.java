@@ -36,4 +36,6 @@ public interface UserService {
     public UserDto updateProfileByEmail(String email, UserDto userDto);
 
     public UserDto getUserById(Long id);
+
+    UserDto findUserById(Long id);
 }

@@ -15,6 +15,15 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.current-user-text {
+  color: #333;
+}
+
+.payment-card-info {
+  color: #333;
+}
+
+/*
 h1 {
   text-align: center;
   color: #333;
@@ -28,6 +37,7 @@ h2 {
   margin-bottom: 15px;
   font-weight: 600;
 }
+  */
 
 .current-user-info {
   background-color: #fff;

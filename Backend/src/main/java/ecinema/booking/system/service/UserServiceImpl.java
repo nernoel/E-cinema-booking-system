@@ -31,6 +31,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+public UserDto findUserById(Long id) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    return modelMapper.map(user, UserDto.class);
+}
+
+    @Override
     public UserDto createUser(UserDto userDto) {
         User user = new User();
         user.setFirstname(userDto.getFirstname());
