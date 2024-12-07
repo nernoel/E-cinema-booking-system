@@ -31,7 +31,8 @@ export default function EditProfile() {
     const storedEmail = localStorage.getItem("userEmail");
     if (storedEmail) {
       axios
-        .get(`http://localhost:8080/api/users/by-email?email=${localStorage.getItem(email)}`)
+        .get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`)
+  
         .then((response) => {
           const userData = response.data;
           setUser({

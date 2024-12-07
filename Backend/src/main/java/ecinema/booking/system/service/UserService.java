@@ -2,6 +2,7 @@ package ecinema.booking.system.service;
 
 import ecinema.booking.system.dto.LoginDto;
 import ecinema.booking.system.dto.UserDto;
+import ecinema.booking.system.entity.User;
 
 import java.util.List;
 
@@ -18,10 +19,14 @@ public interface UserService {
     // Get a user via email address
     Long getUserIdByEmail(String email);
 
+    
     public UserDto getUserByEmail(String email);
 
     // Update user promo status
     UserDto updatePromoStatusById(Long userId, UserDto userDto);
+
+    // Update user promo status by email
+    public UserDto updatePromoStatusByEmail(String email, User.PromoStatus promoStatus);
 
     // Update user active status in the database
     boolean updateUserStatusToActive(String email);
@@ -29,4 +34,6 @@ public interface UserService {
     public UserDto editProfile(Long userId, UserDto userDto);
 
     public UserDto updateProfileByEmail(String email, UserDto userDto);
+
+    public UserDto getUserById(Long id);
 }

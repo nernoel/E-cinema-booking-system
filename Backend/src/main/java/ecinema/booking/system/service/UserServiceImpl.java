@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,6 +116,9 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    /*
+     * Get user id using email
+     */
     @Override
     public Long getUserIdByEmail(String email) {
         User user = userRepository.findByEmail(email);
@@ -131,6 +135,27 @@ public class UserServiceImpl implements UserService {
 
         return modelMapper.map(updatedUser, UserDto.class);
     }
+
+    public UserDto updatePromoStatusByEmail(String email, User.PromoStatus promoStatus) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            user.setPromoStatus(promoStatus); // Update the promotion status
+            userRepository.save(user); // Persist the changes
+            return modelMapper.map(user, UserDto.class);
+        }
+        return null; // Handle user not found case
+    }
+
+    /*
+     * Get a user by id
+     */
+    @Override
+    public UserDto getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        return modelMapper.map(user, UserDto.class);
+    }
+
+    
 
     /*
      * Get a user by email
