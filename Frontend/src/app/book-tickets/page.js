@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -82,7 +82,7 @@ const BookTickets = () => {
         
         // Fetch the user by email
         const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
-        const userId = userResponse.data.id; // Assuming `id` is the user's ID in the response
+        const userId = userResponse.data.id; 
   
         // Fetch payment cards for the user
         const paymentCardsResponse = await axios.get(`http://localhost:8080/api/payment-cards/user/${userId}`);
@@ -117,21 +117,44 @@ const BookTickets = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Assuming `storedEmail` is available and used to get `userId`
+    const storedEmail = localStorage.getItem("userEmail");
+    const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
+    const userId = userResponse.data.id; 
+    
+    // Map selected seats to tickets with corresponding ages
+    const tickets = selectedSeats.map(seatId => {
+      const seat = seats.find(seat => seat.id === seatId); 
+      const ticketPrice = ticketPrices[ages[seatId]] || 0;
+      const ticketType = ages[seatId]; 
+
+      return {
+        userId: userId,
+        showtimeId: showTime,
+        seatId: seat.id,
+        ticketPrice: ticketPrice,
+        ticketType: ticketType
+      };
+    });
+
     const bookingData = {
+      userId: userId,
       movieId: selectedMovie,
-      showroomId: showTime,
-      seats: selectedSeats,
-      ages: selectedSeats.map(seat => ages[seat]),
-      paymentCardId: paymentMethod, // Add the selected payment method (card) ID
+      orderPrice: totalPrice, 
+      tickets: tickets 
     };
 
+     // Log the booking data to the console
+  console.log("Booking Data:", bookingData);
+
     try {
-      const response = await axios.post("http://localhost:8080/api/bookings/confirm", bookingData);
+      const response = await axios.post("http://localhost:8080/api/orders/create-order", bookingData);
       alert("Booking confirmed!");
       router.push('/confirmation');
     } catch (error) {
       console.error("Error booking tickets:", error);
       alert("Error booking tickets. Please try again.");
+      console.log(bookingData);
     }
   };
 

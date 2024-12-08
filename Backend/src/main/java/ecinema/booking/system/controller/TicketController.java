@@ -18,25 +18,25 @@ public class TicketController {
         this.ticketService = ticketService;
     }
 
-    @PostMapping
+    @PostMapping("/create-ticket")
     public ResponseEntity<TicketDto> createTicket(@RequestBody TicketDto ticketDto) {
         TicketDto createdTicket = ticketService.createTicket(ticketDto);
         return new ResponseEntity<>(createdTicket, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get-ticket/{id}")
     public ResponseEntity<TicketDto> getTicketById(@PathVariable Long id) {
         TicketDto ticket = ticketService.getTicketById(id);
         return ResponseEntity.ok(ticket);
     }
 
-    @GetMapping
+    @GetMapping("/get-all-tickets")
     public ResponseEntity<List<TicketDto>> getAllTickets() {
         List<TicketDto> tickets = ticketService.getAllTickets();
         return ResponseEntity.ok(tickets);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete-ticket/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
         ticketService.deleteTicket(id);
         return ResponseEntity.noContent().build();

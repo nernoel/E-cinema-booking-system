@@ -1,5 +1,6 @@
 package ecinema.booking.system.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +19,9 @@ public class Seat {
 
     private String seatNumber;
 
+    @Column(name = "is_available")
     private boolean isAvailable;
+
 
     @ManyToOne
     @JoinColumn(name = "showtime_id", nullable = false)

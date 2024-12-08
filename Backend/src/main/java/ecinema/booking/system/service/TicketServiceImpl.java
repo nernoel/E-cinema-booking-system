@@ -20,6 +20,9 @@ public class TicketServiceImpl implements TicketService {
         this.modelMapper = modelMapper;
     }
 
+    /*
+     * Create a new ticket
+     */
     @Override
     public TicketDto createTicket(TicketDto ticketDto) {
         Ticket ticket = modelMapper.map(ticketDto, Ticket.class);

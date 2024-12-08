@@ -1,15 +1,20 @@
 package ecinema.booking.system.dto;
 
-import java.math.BigDecimal;
-
 public class TicketDto {
-
+    
     private Long id;
+
     private Long userId;
+
     private Long showtimeId;
+
     private Long seatId;
-    private String ticketType; // Use String to make it simple for serialization/deserialization
-    private BigDecimal price;
+
+    private Long orderId;
+
+    private String ticketType;
+    
+    private double ticketPrice;
 
     // Getters and Setters
     public Long getId() {
@@ -44,6 +49,14 @@ public class TicketDto {
         this.seatId = seatId;
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     public String getTicketType() {
         return ticketType;
     }
@@ -52,11 +65,11 @@ public class TicketDto {
         this.ticketType = ticketType;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public double getTicketPrice() {
+        return ticketPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setTicketPrice(double ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
 }

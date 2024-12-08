@@ -5,9 +5,12 @@ import java.util.List;
 public class ShowroomDto {
 
     private long id;
+    
     private String name;
+
     private int capacity;
-    private List<Long> showtimeIds; // Only IDs for simplicity in DTO
+
+    private List<Long> showtimeIds; 
 
     // Getters and Setters
     public long getId() {

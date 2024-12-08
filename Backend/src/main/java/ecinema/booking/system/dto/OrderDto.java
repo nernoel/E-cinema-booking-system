@@ -1,18 +1,23 @@
 package ecinema.booking.system.dto;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import ecinema.booking.system.entity.Ticket;
 
 public class OrderDto {
 
     private Long id;
-    private Long userId; // User ID for reference
-    private Long movieId; // Movie ID for reference
-    private String movieTitle; // Movie title for display
+
+    private Long userId;
+    
+    private Long movieId;
+  
+    private List<TicketDto> tickets;
+
     private LocalDateTime orderDate;
-    private BigDecimal totalAmount;
-    private List<TicketDto> tickets; // Represent tickets as DTOs
+
+    private double orderPrice;
 
     // Getters and Setters
     public Long getId() {
@@ -39,12 +44,12 @@ public class OrderDto {
         this.movieId = movieId;
     }
 
-    public String getMovieTitle() {
-        return movieTitle;
+    public List<TicketDto> getTickets() {
+        return tickets;
     }
 
-    public void setMovieTitle(String movieTitle) {
-        this.movieTitle = movieTitle;
+    public void setTickets(List<TicketDto> tickets) {
+        this.tickets = tickets;
     }
 
     public LocalDateTime getOrderDate() {
@@ -55,19 +60,11 @@ public class OrderDto {
         this.orderDate = orderDate;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
+    public double getOrderPrice() {
+        return orderPrice;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public List<TicketDto> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<TicketDto> tickets) {
-        this.tickets = tickets;
+    public void setOrderPrice(double orderPrice) {
+        this.orderPrice = orderPrice;
     }
 }

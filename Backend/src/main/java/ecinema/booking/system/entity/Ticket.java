@@ -1,7 +1,8 @@
+/** DONE **/
+
 package ecinema.booking.system.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name="tickets")
@@ -24,13 +25,21 @@ public class Ticket {
     private Seat seat;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)  // New field linking to Order
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
+
+    private double ticketPrice;
 
     @Enumerated(EnumType.STRING)
     private TicketType ticketType;
 
-    private BigDecimal price;
+    public enum TicketType {
+        CHILD,
+        ADULT,
+        SENIOR
+    }
+
+   
 
     // Getters and Setters
     public Long getId() {
@@ -81,17 +90,11 @@ public class Ticket {
         this.ticketType = ticketType;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public double getPrice() {
+        return ticketPrice;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    // Enum for Ticket Type
-    public enum TicketType {
-        ADULT,
-        CHILD
+    public void setPrice(double ticketPrice) {
+        this.ticketPrice = ticketPrice;
     }
 }

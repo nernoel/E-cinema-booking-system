@@ -1,18 +1,12 @@
 package ecinema.booking.system.entity;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Order {
-
-    // No-argument constructor
-    public Order() {
-    }
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +25,7 @@ public class Order {
 
     private LocalDateTime orderDate;
 
-    private BigDecimal totalAmount;
+    private double orderPrice;
 
     // Getters and Setters
     public Long getId() {
@@ -74,11 +68,11 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
+    public double getOrderPrice() {
+        return orderPrice;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setOrderPrice(double orderPrice) {
+        this.orderPrice = orderPrice;
     }
 }

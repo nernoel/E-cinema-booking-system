@@ -11,9 +11,9 @@ public class ShowtimeDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
 
-    private Long showroomId; // Fixed naming
+    private Long showroomId; 
     
-    private Long movieId; // Fixed naming
+    private Long movieId; 
 
     // Getters and Setters
     public long getId() {

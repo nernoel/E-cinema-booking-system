@@ -1,55 +1,35 @@
 package ecinema.booking.system.controller;
 
 import ecinema.booking.system.dto.OrderDto;
-import ecinema.booking.system.dto.UserDto;
-import ecinema.booking.system.entity.Order;
-import ecinema.booking.system.entity.User;
-import ecinema.booking.system.service.EmailService;
 import ecinema.booking.system.service.OrderService;
-import ecinema.booking.system.service.UserService;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
-    private final UserService userService;
-    private final EmailService emailService;
-    private final ModelMapper modelMapper;
 
-    @Autowired
-    public OrderController(
-            OrderService orderService,
-            UserService userService,
-            EmailService emailService,
-            ModelMapper modelMapper) {
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
-        this.userService = userService;
-        this.emailService = emailService;
-        this.modelMapper = modelMapper;
     }
 
-    @PostMapping("/confirm")
-    public ResponseEntity<OrderDto> confirmOrder(@RequestBody OrderDto orderDto) {
-        if (orderDto.getUserId() == null || orderDto.getMovieId() == null /*|| orderDto.getTickets() <= 0 */) {
-            return ResponseEntity.badRequest().build();
+    @PostMapping("/create-order")
+    public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
+        if (orderDto.getUserId() == null || orderDto.getMovieId() == null) {
+            return ResponseEntity.badRequest().body(null);
         }
 
         OrderDto createdOrder = orderService.createOrder(orderDto);
 
-        UserDto userDto = userService.findUserById(orderDto.getUserId());
-        User user = modelMapper.map(userDto, User.class);
-        Order order = modelMapper.map(createdOrder, Order.class);
+        // Email handling is now within the service layer
+        orderService.sendOrderConfirmation(createdOrder);
 
-        emailService.sendOrderConfirmationEmail(order, user);
-
-        return ResponseEntity.ok(createdOrder);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
     @GetMapping("/user/{userId}")
@@ -57,4 +37,11 @@ public class OrderController {
         List<OrderDto> orders = orderService.getOrdersByUserId(userId);
         return ResponseEntity.ok(orders);
     }
+
+    @GetMapping
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
+        List<OrderDto> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
 }
+

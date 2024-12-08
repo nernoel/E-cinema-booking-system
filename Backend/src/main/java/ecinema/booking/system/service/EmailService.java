@@ -76,7 +76,7 @@ public class EmailService {
                 + "Order ID: " + order.getId() + "\n"
                 + "Movie: " + order.getMovie().getTitle() + "\n"
                 + "Tickets: " + order.getTickets() + "\n"
-                + "Total Amount: $" + order.getTotalAmount() + "\n"
+                + "Total Amount: $" + order.getOrderPrice() + "\n"
                 + "Order Date: " + order.getOrderDate() + "\n\n"
                 + "Enjoy your movie!\n"
                 + "Best Regards,\n"

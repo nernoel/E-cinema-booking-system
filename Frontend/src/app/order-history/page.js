@@ -1,25 +1,40 @@
 "use client";
-
+import moment from "moment";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/order-history.css";
 
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
-  const userId = localStorage.getItem("userId"); // Assuming user ID is stored here after login
+  const [movieTitles, setMovieTitles] = useState({});
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/orders/user/${userId}`);
+        const storedEmail = localStorage.getItem("userEmail");
+        
+        // Fetch the user by email
+        const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
+        const id = userResponse.data.id;
+        
+        // Fetch orders based on user ID
+        const response = await axios.get(`http://localhost:8080/api/orders/user/${id}`);
         setOrders(response.data);
+        
+        // Fetch movie titles for all orders
+        const movieData = {};
+        for (let order of response.data) {
+          const movieResponse = await axios.get(`http://localhost:8080/api/movies/${order.movieId}`);
+          movieData[order.id] = movieResponse.data.title; 
+        }
+        setMovieTitles(movieData);
       } catch (error) {
         console.error("Error fetching order history:", error);
       }
     };
 
     fetchOrders();
-  }, [userId]);
+  }, []);
 
   return (
     <div className="order-history-container">
@@ -39,10 +54,17 @@ const OrderHistory = () => {
             {orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.id}</td>
-                <td>{order.movieTitle}</td>
-                <td>{new Date(order.orderDate).toLocaleString()}</td>
-                <td>{order.tickets}</td>
-                <td>${order.totalAmount.toFixed(2)}</td>
+                <td>{movieTitles[order.id] || 'Loading...'}</td>
+                <td>{moment(order.orderDate, "YYYYMMDDHHmm").format("YYYY-MM-DD HH:mm")}</td>
+                <td>
+                  {/* Display ticket details */}
+                  {order.tickets ? order.tickets.map((ticket, index) => (
+                    <div key={index}>
+                      <p>Seat: {ticket.seatId} | Type: {ticket.ticketType} | Price: ${ticket.ticketPrice}</p>
+                    </div>
+                  )) : 'No tickets'}
+                </td>
+                <td>${order.orderPrice}</td>
               </tr>
             ))}
           </tbody>
