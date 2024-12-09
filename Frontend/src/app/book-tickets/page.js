@@ -17,6 +17,7 @@ const BookTickets = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState(''); // No default payment method yet
   const [paymentCards, setPaymentCards] = useState([]); // Store user's payment cards
+  const [loading, setLoading] = useState(false); // Loading state
 
   const ticketPrices = {
     Child: 9,
@@ -116,48 +117,53 @@ const BookTickets = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // Assuming `storedEmail` is available and used to get `userId`
-    const storedEmail = localStorage.getItem("userEmail");
-    const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
-    const userId = userResponse.data.id; 
-    
-    // Map selected seats to tickets with corresponding ages
-    const tickets = selectedSeats.map(seatId => {
-      const seat = seats.find(seat => seat.id === seatId); 
-      const ticketPrice = ticketPrices[ages[seatId]] || 0;
-      const ticketType = ages[seatId]; 
-
-      return {
-        userId: userId,
-        showtimeId: showTime,
-        seatId: seat.id,
-        ticketPrice: ticketPrice,
-        ticketType: ticketType
-      };
-    });
-
-    const bookingData = {
-      userId: userId,
-      movieId: selectedMovie,
-      orderPrice: totalPrice, 
-      tickets: tickets 
-    };
-
-     // Log the booking data to the console
-  console.log("Booking Data:", bookingData);
-
+  
+    setLoading(true); // Set loading state to true while submitting
+  
     try {
+      const storedEmail = localStorage.getItem("userEmail");
+      const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
+      const userId = userResponse.data.id; 
+  
+      const tickets = selectedSeats.map(seatId => {
+        const seat = seats.find(seat => seat.id === seatId); 
+        const ticketPrice = ticketPrices[ages[seatId]] || 0;
+        const ticketType = ages[seatId]; 
+  
+        return {
+          userId: userId,
+          showtimeId: showTime,
+          seatId: seat.id,
+          ticketPrice: ticketPrice,
+          ticketType: ticketType
+        };
+      });
+  
+      const bookingData = {
+        userId: userId,
+        movieId: selectedMovie,
+        orderPrice: totalPrice, 
+        tickets: tickets,
+        paymentCardId: paymentMethod
+      };
+  
+      // Save booking data to localStorage
+      localStorage.setItem("bookingData", JSON.stringify(bookingData));
+  
+      // Send the booking request
       const response = await axios.post("http://localhost:8080/api/orders/create-order", bookingData);
       alert("Booking confirmed!");
-
-      router.push('/confirmation');
+  
+      router.push('/order-confirmation'); // Redirect to confirmation page
+  
     } catch (error) {
       console.error("Error booking tickets:", error);
       alert("Error booking tickets. Please try again.");
-      console.log(bookingData);
+    } finally {
+      setLoading(false); // Set loading state back to false after the process
     }
   };
+  
 
   return (
     <div className="book-tickets-container">
@@ -187,22 +193,20 @@ const BookTickets = () => {
 
         {/* Seat Selection */}
         <div>
-  <h2>Select Seats:</h2>
-  <div className="seats">
-    {seats.map(seat => (
-      <div
-        key={seat.id}
-        className={`seat ${selectedSeats.includes(seat.id) ? 'selected' : ''} 
-          ${seat.seatStatus === 'AVAILABLE' ? 'available' : 'taken'}`}
-        onClick={() => handleSeatSelection(seat.id)}
-      >
-        <span>Seat {seat.seatNumber}</span>
-      </div>
-    ))}
-  </div>
-</div>
-
-
+          <h2>Select Seats:</h2>
+          <div className="seats">
+            {seats.map(seat => (
+              <div
+                key={seat.id}
+                className={`seat ${selectedSeats.includes(seat.id) ? 'selected' : ''} 
+                  ${seat.seatStatus === 'AVAILABLE' ? 'available' : 'taken'}`}
+                onClick={() => handleSeatSelection(seat.id)}
+              >
+                <span>Seat {seat.seatNumber}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Age Selection */}
         <div>
@@ -238,7 +242,9 @@ const BookTickets = () => {
           <h2>Total Price: ${totalPrice}</h2>
         </div>
 
-        <button type="submit">Confirm Booking</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Booking..." : "Confirm Booking"}
+        </button>
       </form>
       <a href="/" className="back-to-home">Back to Home</a>
     </div>

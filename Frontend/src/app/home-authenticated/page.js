@@ -81,6 +81,7 @@ export default function Home() {
                             <Link href="/">Home</Link>
                             <Link href="/book-tickets">Book Tickets</Link>
                             <Link href="/edit-profile">Edit Profile</Link>
+                            <Link href="/order-history">View order history</Link>
                             <button onClick={handleLogout} className="logout-button">
                                 Logout
                             </button>

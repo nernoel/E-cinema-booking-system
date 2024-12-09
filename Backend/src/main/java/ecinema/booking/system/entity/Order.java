@@ -23,6 +23,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 
+    @ManyToOne
+    @JoinColumn(name = "payment_card_id")
+    private PaymentCard paymentCard;
+
     private LocalDateTime orderDate;
 
     private double orderPrice;
@@ -74,5 +78,13 @@ public class Order {
 
     public void setOrderPrice(double orderPrice) {
         this.orderPrice = orderPrice;
+    }
+
+    public PaymentCard getPaymentCard() {
+        return paymentCard;
+    }
+
+    public void setPaymentCard(PaymentCard paymentCard) {
+        this.paymentCard = paymentCard;
     }
 }

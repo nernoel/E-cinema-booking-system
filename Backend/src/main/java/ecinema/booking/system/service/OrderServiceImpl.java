@@ -5,6 +5,7 @@ import ecinema.booking.system.dto.OrderDto;
 import ecinema.booking.system.dto.TicketDto;
 import ecinema.booking.system.entity.Movie;
 import ecinema.booking.system.entity.Order;
+import ecinema.booking.system.entity.PaymentCard;
 import ecinema.booking.system.entity.Seat;
 import ecinema.booking.system.entity.Showtime;
 import ecinema.booking.system.entity.Ticket;
@@ -12,6 +13,7 @@ import ecinema.booking.system.entity.User;
 import ecinema.booking.system.entity.Seat.SeatStatus;
 import ecinema.booking.system.repository.MovieRepository;
 import ecinema.booking.system.repository.OrderRepository;
+import ecinema.booking.system.repository.PaymentCardRepository;
 import ecinema.booking.system.repository.SeatRepository;
 import ecinema.booking.system.repository.ShowtimeRepository;
 import ecinema.booking.system.repository.TicketRepository;
@@ -35,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     private final TicketRepository ticketRepository;
     private final ShowtimeRepository showtimeRepository;
     private final SeatRepository seatRepository;
+    private final PaymentCardRepository paymentCardRepository;
 
     // All args constructor
     public OrderServiceImpl(
@@ -45,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
             ModelMapper modelMapper,
             TicketRepository ticketRepository,
             ShowtimeRepository showtimeRepository,
-            SeatRepository seatRepository) {
+            SeatRepository seatRepository, PaymentCardRepository paymentCardRepository) {
         this.orderRepository = orderRepository;
         this.movieRepository = movieRepository;
         this.userRepository = userRepository;
@@ -54,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
         this.ticketRepository = ticketRepository;
         this.showtimeRepository = showtimeRepository;
         this.seatRepository = seatRepository;
+        this.paymentCardRepository = paymentCardRepository;
     }
 
     /*
@@ -67,6 +71,9 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Movie movie = movieRepository.findById(orderDto.getMovieId())
                 .orElseThrow(() -> new RuntimeException("Movie not found"));
+        // Fetch the Payment Card based on paymentCardId from the DTO
+    PaymentCard paymentCard = paymentCardRepository.findById(orderDto.getPaymentCardId())
+            .orElseThrow(() -> new RuntimeException("Payment card not found"));
 
         // Create and save the order entity
         Order order = new Order();
@@ -74,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
         order.setMovie(movie);
         order.setOrderDate(LocalDateTime.now());
         order.setOrderPrice(orderDto.getOrderPrice());
+        order.setPaymentCard(paymentCard);
 
         // Save the order first
         orderRepository.save(order);

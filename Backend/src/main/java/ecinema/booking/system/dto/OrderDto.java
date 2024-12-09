@@ -19,6 +19,8 @@ public class OrderDto {
 
     private double orderPrice;
 
+    private Long paymentCardId;
+
     // Getters and Setters
     public Long getId() {
         return id;
@@ -42,6 +44,14 @@ public class OrderDto {
 
     public void setMovieId(Long movieId) {
         this.movieId = movieId;
+    }
+
+    public Long getPaymentCardId() {
+        return paymentCardId;
+    }
+
+    public void setPaymentCardId(Long paymentCardId) {
+        this.paymentCardId = paymentCardId;
     }
 
     public List<TicketDto> getTickets() {

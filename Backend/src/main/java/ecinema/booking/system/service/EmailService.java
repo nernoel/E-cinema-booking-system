@@ -71,19 +71,32 @@ public class EmailService {
         emailSender.send(message);
     }
 
-    // Send order confirmation email
     public void sendOrderConfirmationEmail(Order order, User user) {
 
         StringBuilder ticketsInfo = new StringBuilder("Tickets: \n");
         for (Ticket ticket : order.getTickets()) {
-        ticketsInfo.append("Ticket ID: ").append(ticket.getId())
-               .append("Ticket type:").append(ticket.getTicketType())
-               .append(", Seat Number: ").append(ticket.getSeat().getSeatNumber())
-               .append(", Price: ").append(ticket.getPrice())
-               .append("\n");
-}
+            ticketsInfo.append("Ticket ID: ").append(ticket.getId())
+                       .append(" Ticket type: ").append(ticket.getTicketType())
+                       .append(", Seat Number: ").append(ticket.getSeat().getSeatNumber())
+                       .append(", Price: ").append(ticket.getPrice())
+                       .append("\n");
+        }
     
-
+        // Check if the payment card or card number is null
+        String paymentInfo = "Payment Information: ";
+        String lastFourDigits = "N/A";  // Default value in case the card number is null
+    
+        if (order.getPaymentCard() != null && order.getPaymentCard().getCardNumber() != null) {
+            // Only access cardNumber if it's not null
+            String cardNumber = order.getPaymentCard().getCardNumber();
+            if (cardNumber.length() >= 4) {
+                lastFourDigits = cardNumber.substring(cardNumber.length() - 4);
+            }
+            paymentInfo = "Card ending in " + lastFourDigits + " was used for payment";
+        } else {
+            paymentInfo = "No payment card information available.";
+        }
+    
         String subject = "Order Confirmation - eCinema";
         String messageContent = "Dear " + user.getFirstname() + ",\n\n"
                 + "Thank you for your order! Here are the details:\n\n"
@@ -92,18 +105,20 @@ public class EmailService {
                 + "Tickets: " + ticketsInfo.toString() + "\n"
                 + "Total Amount: $" + order.getOrderPrice() + "\n"
                 + "Order Date: " + order.getOrderDate() + "\n\n"
+                + paymentInfo + "\n\n"
                 + "Enjoy your movie!\n"
                 + "Best Regards,\n"
                 + "The eCinema Team";
-
+    
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(senderAddress);
         message.setTo(user.getEmail());
         message.setSubject(subject);
         message.setText(messageContent);
-
+    
         emailSender.send(message);
     }
+    
 
     private String generateVerificationCode() {
         Random random = new Random();
