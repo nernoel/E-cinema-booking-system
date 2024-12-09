@@ -110,4 +110,35 @@
   .back-to-home:hover {
     text-decoration: underline; 
   }
+
+  .selected-movie-image {
+    text-align: center;
+  }
+  
+  .selected-movie-image img {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .seat {
+    padding: 10px;
+    margin: 5px;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    border-radius: 5px;
+  }
+  
+  .seat.available {
+    background-color: gray; /* Display in gray for available seats */
+  }
+  
+  .seat.taken {
+    background-color: red; /* Display in red for taken seats */
+  }
+  
+  .seat.selected {
+    border: 2px solid blue; /* Highlight selected seats with blue border */
+    background-color: lightblue; /* Optionally, change color when selected */
+  }
   

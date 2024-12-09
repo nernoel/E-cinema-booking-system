@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ecinema.booking.system.dto.SeatDto;
+import ecinema.booking.system.entity.Seat.SeatStatus;
 import ecinema.booking.system.service.SeatService;
 
 import java.util.List;
@@ -22,17 +23,17 @@ public class SeatController {
         List<SeatDto> seats = seatService.getSeatsForShowtime(showtimeId);
         return ResponseEntity.ok(seats);
     }
-
-    // Update seat availability (book or cancel seat)
-    @PutMapping("/{seatId}")
-    public ResponseEntity<SeatDto> updateSeat(@PathVariable Long seatId, @RequestParam boolean isAvailable) {
-        try {
-            SeatDto updatedSeat = seatService.updateSeatAvailability(seatId, isAvailable);
-            return ResponseEntity.ok(updatedSeat);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+// Update seat availability (book or cancel seat)
+@PutMapping("/{seatId}")
+public ResponseEntity<SeatDto> updateSeat(@PathVariable Long seatId, @RequestParam SeatStatus seatStatus) {
+    try {
+        SeatDto updatedSeat = seatService.updateSeatAvailability(seatId, seatStatus);
+        return ResponseEntity.ok(updatedSeat);
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().build();
     }
+}
+
 
     // Add multiple seats to a showtime
 @PostMapping("/create-seats")

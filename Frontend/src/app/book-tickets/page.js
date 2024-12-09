@@ -150,6 +150,7 @@ const BookTickets = () => {
     try {
       const response = await axios.post("http://localhost:8080/api/orders/create-order", bookingData);
       alert("Booking confirmed!");
+
       router.push('/confirmation');
     } catch (error) {
       console.error("Error booking tickets:", error);
@@ -186,19 +187,22 @@ const BookTickets = () => {
 
         {/* Seat Selection */}
         <div>
-          <h2>Select Seats:</h2>
-          <div className="seats">
-            {seats.map(seat => (
-              <div
-                key={seat.id}
-                className={`seat ${selectedSeats.includes(seat.id) ? 'selected' : ''}`}
-                onClick={() => handleSeatSelection(seat.id)}
-              >
-                <span>Seat {seat.number}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+  <h2>Select Seats:</h2>
+  <div className="seats">
+    {seats.map(seat => (
+      <div
+        key={seat.id}
+        className={`seat ${selectedSeats.includes(seat.id) ? 'selected' : ''} 
+          ${seat.seatStatus === 'AVAILABLE' ? 'available' : 'taken'}`}
+        onClick={() => handleSeatSelection(seat.id)}
+      >
+        <span>Seat {seat.seatNumber}</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+
 
         {/* Age Selection */}
         <div>

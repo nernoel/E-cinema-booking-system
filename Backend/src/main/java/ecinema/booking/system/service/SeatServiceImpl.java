@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ecinema.booking.system.dto.SeatDto;
 import ecinema.booking.system.entity.Seat;
+import ecinema.booking.system.entity.Seat.SeatStatus;
 import ecinema.booking.system.entity.Showtime;
 import ecinema.booking.system.repository.SeatRepository;
 import ecinema.booking.system.repository.ShowtimeRepository;
@@ -39,26 +40,27 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
-    public SeatDto updateSeatAvailability(Long seatId, boolean isAvailable) {
-        Seat seat = seatRepository.findById(seatId)
-                .orElseThrow(() -> new RuntimeException("Seat not found"));
+public SeatDto updateSeatAvailability(Long seatId, SeatStatus seatStatus) {
+    Seat seat = seatRepository.findById(seatId)
+            .orElseThrow(() -> new RuntimeException("Seat not found"));
 
-        seat.setAvailable(isAvailable);
-        seatRepository.save(seat);
+    seat.setSeatStatus(seatStatus);  // Set the seat status to the provided enum value
+    seatRepository.save(seat);
 
-        return modelMapper.map(seat, SeatDto.class);
-    }
+    return modelMapper.map(seat, SeatDto.class);
+}
 
-    @Override
+
+@Override
 public List<SeatDto> saveSeats(List<SeatDto> seatDtos) {
     // Fetch the Showtime from each SeatDto's showtimeId
     List<Seat> seats = seatDtos.stream().map(dto -> {
         Showtime showtime = showtimeRepository.findById(dto.getShowtimeId())
                 .orElseThrow(() -> new RuntimeException("Showtime not found"));
-        
+
         Seat seat = new Seat();
         seat.setSeatNumber(dto.getSeatNumber());
-        seat.setAvailable(dto.isAvailable());
+        seat.setSeatStatus(dto.getSeatStatus());  // Map seatStatus (enum) directly
         seat.setShowtime(showtime);
         return seat;
     }).collect(Collectors.toList());
@@ -71,5 +73,6 @@ public List<SeatDto> saveSeats(List<SeatDto> seatDtos) {
             .map(seat -> modelMapper.map(seat, SeatDto.class))
             .collect(Collectors.toList());
 }
+
 
 }

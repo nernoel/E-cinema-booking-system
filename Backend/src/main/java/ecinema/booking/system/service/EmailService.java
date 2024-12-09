@@ -8,11 +8,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
 import ecinema.booking.system.entity.Order;
 import ecinema.booking.system.entity.Promotion;
+import ecinema.booking.system.entity.Ticket;
 import ecinema.booking.system.entity.User;
 
 @Service
@@ -25,6 +27,7 @@ public class EmailService {
     private VerificationCodeRepository verificationCodeRepository;
 
     private String senderAddress = "nnernoel@gmail.com";
+
 
     public void sendPromotionEmail(Promotion promotion, List<User> users) {
         for (User user : users) {
@@ -70,12 +73,23 @@ public class EmailService {
 
     // Send order confirmation email
     public void sendOrderConfirmationEmail(Order order, User user) {
+
+        StringBuilder ticketsInfo = new StringBuilder("Tickets: \n");
+        for (Ticket ticket : order.getTickets()) {
+        ticketsInfo.append("Ticket ID: ").append(ticket.getId())
+               .append("Ticket type:").append(ticket.getTicketType())
+               .append(", Seat Number: ").append(ticket.getSeat().getSeatNumber())
+               .append(", Price: ").append(ticket.getPrice())
+               .append("\n");
+}
+    
+
         String subject = "Order Confirmation - eCinema";
         String messageContent = "Dear " + user.getFirstname() + ",\n\n"
                 + "Thank you for your order! Here are the details:\n\n"
                 + "Order ID: " + order.getId() + "\n"
                 + "Movie: " + order.getMovie().getTitle() + "\n"
-                + "Tickets: " + order.getTickets() + "\n"
+                + "Tickets: " + ticketsInfo.toString() + "\n"
                 + "Total Amount: $" + order.getOrderPrice() + "\n"
                 + "Order Date: " + order.getOrderDate() + "\n\n"
                 + "Enjoy your movie!\n"

@@ -9,6 +9,7 @@ import ecinema.booking.system.entity.Seat;
 import ecinema.booking.system.entity.Showtime;
 import ecinema.booking.system.entity.Ticket;
 import ecinema.booking.system.entity.User;
+import ecinema.booking.system.entity.Seat.SeatStatus;
 import ecinema.booking.system.repository.MovieRepository;
 import ecinema.booking.system.repository.OrderRepository;
 import ecinema.booking.system.repository.SeatRepository;
@@ -117,6 +118,7 @@ public class OrderServiceImpl implements OrderService {
             ticket.setUser(user);
             ticket.setShowtime(showtime);
             ticket.setSeat(seat);
+            ticket.setSeatStatus(Seat.SeatStatus.TAKEN);
 
             // Add ticket to the list
             tickets.add(ticket);

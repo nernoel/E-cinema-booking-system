@@ -1,18 +1,17 @@
 package ecinema.booking.system.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ecinema.booking.system.entity.Seat.SeatStatus;
 
 public class SeatDto {
 
     private Long id;
-
     private String seatNumber;
 
-    @JsonProperty("isAvailable") 
-    private boolean isAvailable;
+    @JsonProperty("seatStatus")  
+    private SeatStatus seatStatus; 
 
     private Long showtimeId;
-
 
     // Getters and Setters
     public Long getId() {
@@ -31,13 +30,12 @@ public class SeatDto {
         this.seatNumber = seatNumber;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
+    public SeatStatus getSeatStatus() {
+        return seatStatus;
     }
-    
 
-    public void setAvailable(boolean isAvailable) {
-        this.isAvailable = isAvailable;
+    public void setSeatStatus(SeatStatus seatStatus) {
+        this.seatStatus = seatStatus;
     }
 
     public Long getShowtimeId() {

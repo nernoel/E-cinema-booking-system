@@ -2,6 +2,7 @@
 
 package ecinema.booking.system.entity;
 
+import ecinema.booking.system.entity.Seat.SeatStatus;
 import jakarta.persistence.*;
 
 @Entity
@@ -38,8 +39,6 @@ public class Ticket {
         ADULT,
         SENIOR
     }
-
-   
 
     // Getters and Setters
     public Long getId() {
@@ -96,5 +95,20 @@ public class Ticket {
 
     public void setPrice(double ticketPrice) {
         this.ticketPrice = ticketPrice;
+    }
+
+    // Get the seat status from the associated seat
+    public SeatStatus getSeatStatus() {
+        return seat.getSeatStatus();
+    }
+
+    // Set the seat status and update the seat entity
+    public void setSeatStatus(SeatStatus seatStatus) {
+        seat.setSeatStatus(seatStatus);  // Update the seat status directly
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{id=" + id + ", seatNumber='" + seat.getSeatNumber() + "', price=" + ticketPrice + "}";
     }
 }

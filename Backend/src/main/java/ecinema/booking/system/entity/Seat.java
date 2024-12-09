@@ -2,6 +2,8 @@ package ecinema.booking.system.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,9 +21,15 @@ public class Seat {
 
     private String seatNumber;
 
-    @Column(name = "is_available")
-    private boolean isAvailable;
+    public enum SeatStatus {
+        AVAILABLE, 
+        TAKEN
+    }
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seatStatus")
+    private SeatStatus seatStatus;
+    
 
     @ManyToOne
     @JoinColumn(name = "showtime_id", nullable = false)
@@ -44,12 +52,12 @@ public class Seat {
         this.seatNumber = seatNumber;
     }
 
-    public boolean isAvailable() {
-        return isAvailable;
+    public SeatStatus getSeatStatus() {
+        return seatStatus;
     }
 
-    public void setAvailable(boolean isAvailable) {
-        this.isAvailable = isAvailable;
+    public void setSeatStatus(SeatStatus seatStatus) {
+        this.seatStatus = seatStatus;
     }
 
     public Showtime getShowtime() {
