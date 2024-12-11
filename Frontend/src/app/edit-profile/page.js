@@ -24,7 +24,10 @@ export default function EditProfile() {
   const [expiryDate, setExpiryDate] = useState("");
   const [cardType, setCardType] = useState("");
 
+  const [userId, setUserId] = useState("");
+
   const router = useRouter();
+  const userIdentification = ""
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -112,50 +115,54 @@ export default function EditProfile() {
       });
   };
 
-  const handleAddCard = (event) => {
+  // Handle adding a payment card
+  const handleAddCard = async (event) => {
     event.preventDefault();
-  
-    // Prevent adding more than 4 payment cards
+
     if (user.paymentCards.length >= 4) {
       alert("You can only add up to 4 payment cards.");
       return;
     }
-  
-    // Create a new card object
-    const newCard = {
-      cardHolder: cardName,
-      cardNumber: number,
-      securityCode,
-      expiryDate,
-      cardType,
-      userId: user.id, // Assume `user.id` holds the current user's ID
-    };
-  
-    // Send the new payment card to the backend
-    axios
-      .post(`http://localhost:8080/api/payment-cards/add`, newCard)
-      .then((response) => {
-        // Get the newly added card from the response
-        const addedCard = response.data;
-  
-        // Update the local user state with the new card
-        setUser((prevState) => ({
-          ...prevState,
-          paymentCards: [...prevState.paymentCards, addedCard],
-        }));
-  
-        alert("Payment card added successfully!");
-      })
-      .catch((error) => {
-        console.error("Error adding payment card:", error);
-      });
-  
-    // Clear input fields
-    setCardName("");
-    setNumber("");
-    setSecurityCode("");
-    setExpiryDate("");
-    setCardType("");
+
+    const storedEmail = localStorage.getItem("userEmail");
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/users/get-id/${storedEmail}`);
+      const responseId = response.data;
+
+      const newCard = {
+        cardHolder: cardName,
+        cardNumber: number,
+        securityCode,
+        expiryDate,
+        cardType,
+        userId: responseId,
+      };
+
+      axios
+        .post(`http://localhost:8080/api/payment-cards/add`, newCard)
+        .then((response) => {
+          const addedCard = response.data;
+          setUser((prevState) => ({
+            ...prevState,
+            paymentCards: [...prevState.paymentCards, addedCard],
+          }));
+
+          alert("Payment card added successfully!");
+        })
+        .catch((error) => {
+          console.error("Error adding payment card:", error);
+        });
+
+      // Clear input fields
+      setCardName("");
+      setNumber("");
+      setSecurityCode("");
+      setExpiryDate("");
+      setCardType("");
+    } catch (error) {
+      console.error("Error fetching user ID:", error);
+    }
   };
   
   

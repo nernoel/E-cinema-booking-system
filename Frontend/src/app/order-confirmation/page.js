@@ -1,81 +1,76 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import "../styles/order-confirmation.css";
 
 const OrderConfirmation = () => {
+  const [orderDetails, setOrderDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const router = useRouter();
-  const [bookingData, setBookingData] = useState(null);
-  const [movie, setMovie] = useState(null); // State to store movie details
-  const [paymentCard, setPaymentCard] = useState(null); // State to store payment card details
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
 
   useEffect(() => {
-    // Retrieve the booking data from localStorage
-    const storedBookingData = localStorage.getItem("bookingData");
-    if (storedBookingData) {
-      const parsedBookingData = JSON.parse(storedBookingData);
-      setBookingData(parsedBookingData);
-
-      // Fetch the movie and payment card details
-      fetchMovieDetails(parsedBookingData.movieId);
-      fetchPaymentCardDetails(parsedBookingData.paymentCardId);
-    } else {
-      router.push("/home-authenticated"); 
+    if (!orderId) {
+      setError("Order ID is missing.");
+      setLoading(false);
+      return;
     }
-  }, [router]);
 
-  const fetchMovieDetails = async (movieId) => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/movies/${movieId}`);
-      setMovie(response.data); // Set the movie details
-    } catch (error) {
-      console.error("Error fetching movie:", error);
-    }
+    const fetchOrderDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/orders/get-order/${orderId}`
+        );
+        setOrderDetails(response.data);
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+        setError("Failed to fetch order details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderId]);
+
+  const handleBackToHome = () => {
+    router.push("/home-authenticated");
   };
 
-  const fetchPaymentCardDetails = async (paymentCardId) => {
-    try {
-      const response = await axios.get(`http://localhost:8080/api/payment-cards/${paymentCardId}`);
-      setPaymentCard(response.data); // Set the payment card details
-    } catch (error) {
-      console.error("Error fetching payment card:", error);
-    }
-  };
-
-  if (!bookingData) {
-    return <div>Loading...</div>;
-  }
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="error">{error}</p>;
 
   return (
     <div className="order-confirmation-container">
       <h1>Order Confirmation</h1>
-      <div className="confirmation-details">
-        <h2>Booking Summary</h2>
-        <p><strong>Movie:</strong> {movie ? movie.title : "Loading movie details..."}</p>
-        <p><strong>Total Price:</strong> ${bookingData.orderPrice}</p>
-
-        <h3>Tickets</h3>
-        <ul>
-          {bookingData.tickets.map(ticket => (
-            <li key={ticket.seatId}>
-              <p>Seat: {ticket.seatId}</p>
-              <p>Ticket Type: {ticket.ticketType}</p>
-              <p>Price: ${ticket.ticketPrice}</p>
-            </li>
-          ))}
-        </ul>
-
-        <h3>Payment Method</h3>
-        <p>
-          {paymentCard 
-            ? `Card ending in ${paymentCard.cardNumber.slice(-4)}`
-            : "No payment method selected"}
-        </p>
-
-        <button onClick={() => router.push("/")}>Back to Home</button>
-      </div>
+      {orderDetails && (
+        <>
+          <h2>Thank you for your purchase!</h2>
+          <p><strong>Order ID:</strong> {orderDetails.id}</p>
+          <p>
+            {/*<strong>Order Date:</strong>{" "}
+            {new Date(...orderDetails.orderDate).toLocaleString()*/}
+          </p>
+          <p><strong>Total Price:</strong> ${orderDetails.orderPrice.toFixed(2)}</p>
+          {/*<p><strong>Payment Method ID:</strong> {orderDetails.paymentCardId}</p>*/}
+          <h3>Tickets</h3>
+          <ul className="tickets-text">
+            {orderDetails.tickets.map((ticket) => (
+              <li key={ticket.id}>
+                <strong>Seat:</strong> {ticket.seatId}, <strong>Type:</strong>{" "}
+                {ticket.ticketType}, <strong>Price:</strong> ${ticket.ticketPrice.toFixed(2)}
+              </li>
+            ))}
+          </ul>
+          <button className="back-to-home-button" onClick={handleBackToHome}>
+            Back to Home
+          </button>
+        </>
+      )}
     </div>
   );
 };

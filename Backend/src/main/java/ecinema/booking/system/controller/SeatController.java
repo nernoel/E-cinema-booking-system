@@ -17,6 +17,13 @@ public class SeatController {
     @Autowired
     private SeatService seatService;
 
+    // Endpoint to get a specific seat by its ID
+    @GetMapping("get-seat/{seatId}")
+    public ResponseEntity<SeatDto> getSeatById(@PathVariable Long seatId) {
+        SeatDto seatDto = seatService.getSeatById(seatId);
+        return ResponseEntity.ok(seatDto);  // Return the seat DTO as a 200 OK response
+    }
+
     // Get all seats for a given showtime
     @GetMapping("/{showtimeId}")
     public ResponseEntity<List<SeatDto>> getSeats(@PathVariable Long showtimeId) {

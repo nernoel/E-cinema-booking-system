@@ -7,6 +7,7 @@ import ecinema.booking.system.entity.Seat.SeatStatus;
 
 public interface SeatService {
     List<SeatDto> getSeatsForShowtime(Long showtimeId);
-   public SeatDto updateSeatAvailability(Long seatId, SeatStatus seatStatus);
+    SeatDto updateSeatAvailability(Long seatId, SeatStatus seatStatus);
     List<SeatDto> saveSeats(List<SeatDto> seatDtos);
+    SeatDto getSeatById(Long seatId);
 }

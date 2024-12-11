@@ -1,26 +1,13 @@
 package ecinema.booking.system.service;
 
-import ecinema.booking.system.dto.MovieDto;
 import ecinema.booking.system.dto.OrderDto;
 import ecinema.booking.system.dto.TicketDto;
-import ecinema.booking.system.entity.Movie;
-import ecinema.booking.system.entity.Order;
-import ecinema.booking.system.entity.PaymentCard;
-import ecinema.booking.system.entity.Seat;
-import ecinema.booking.system.entity.Showtime;
-import ecinema.booking.system.entity.Ticket;
-import ecinema.booking.system.entity.User;
-import ecinema.booking.system.entity.Seat.SeatStatus;
-import ecinema.booking.system.repository.MovieRepository;
-import ecinema.booking.system.repository.OrderRepository;
-import ecinema.booking.system.repository.PaymentCardRepository;
-import ecinema.booking.system.repository.SeatRepository;
-import ecinema.booking.system.repository.ShowtimeRepository;
-import ecinema.booking.system.repository.TicketRepository;
-import ecinema.booking.system.repository.UserRepository;
+import ecinema.booking.system.entity.*;
+import ecinema.booking.system.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +26,6 @@ public class OrderServiceImpl implements OrderService {
     private final SeatRepository seatRepository;
     private final PaymentCardRepository paymentCardRepository;
 
-    // All args constructor
     public OrderServiceImpl(
             OrderRepository orderRepository,
             UserRepository userRepository,
@@ -48,10 +34,11 @@ public class OrderServiceImpl implements OrderService {
             ModelMapper modelMapper,
             TicketRepository ticketRepository,
             ShowtimeRepository showtimeRepository,
-            SeatRepository seatRepository, PaymentCardRepository paymentCardRepository) {
+            SeatRepository seatRepository,
+            PaymentCardRepository paymentCardRepository) {
         this.orderRepository = orderRepository;
-        this.movieRepository = movieRepository;
         this.userRepository = userRepository;
+        this.movieRepository = movieRepository;
         this.emailService = emailService;
         this.modelMapper = modelMapper;
         this.ticketRepository = ticketRepository;
@@ -60,22 +47,16 @@ public class OrderServiceImpl implements OrderService {
         this.paymentCardRepository = paymentCardRepository;
     }
 
-    /*
-     * Create a new order with associated tickets
-     */
     @Transactional
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
-        // Fetch the User and Movie based on IDs from the DTO
         User user = userRepository.findById(orderDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Movie movie = movieRepository.findById(orderDto.getMovieId())
                 .orElseThrow(() -> new RuntimeException("Movie not found"));
-        // Fetch the Payment Card based on paymentCardId from the DTO
-    PaymentCard paymentCard = paymentCardRepository.findById(orderDto.getPaymentCardId())
-            .orElseThrow(() -> new RuntimeException("Payment card not found"));
+        PaymentCard paymentCard = paymentCardRepository.findById(orderDto.getPaymentCardId())
+                .orElseThrow(() -> new RuntimeException("Payment card not found"));
 
-        // Create and save the order entity
         Order order = new Order();
         order.setUser(user);
         order.setMovie(movie);
@@ -83,38 +64,23 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderPrice(orderDto.getOrderPrice());
         order.setPaymentCard(paymentCard);
 
-        // Save the order first
         orderRepository.save(order);
 
-        // Create tickets for this order
         List<Ticket> tickets = createTicketsForOrder(order, orderDto.getTickets());
-
-        // Associate the tickets with the order
         order.setTickets(tickets);
-
-        // Save the tickets to the database
         ticketRepository.saveAll(tickets);
 
-        // Return the order DTO
         return modelMapper.map(order, OrderDto.class);
     }
 
-    // Create tickets for an order
     private List<Ticket> createTicketsForOrder(Order order, List<TicketDto> ticketDtos) {
         List<Ticket> tickets = new ArrayList<>();
-
-        // Loop through each ticket DTO and create the corresponding Ticket entity
         for (TicketDto ticketDto : ticketDtos) {
             Ticket ticket = new Ticket();
-
-            // Set references for the ticket
-            ticket.setOrder(order);  // Associate with the order
-            ticket.setPrice(ticketDto.getTicketPrice());  // Set the price from DTO
-
-            // Set ticket type (assuming it's a string and converting to Enum)
+            ticket.setOrder(order);
+            ticket.setPrice(ticketDto.getTicketPrice());
             ticket.setTicketType(Ticket.TicketType.valueOf(ticketDto.getTicketType().toUpperCase()));
 
-            // Fetch user, showtime, and seat based on their IDs
             User user = userRepository.findById(ticketDto.getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
             Showtime showtime = showtimeRepository.findById(ticketDto.getShowtimeId())
@@ -122,38 +88,33 @@ public class OrderServiceImpl implements OrderService {
             Seat seat = seatRepository.findById(ticketDto.getSeatId())
                     .orElseThrow(() -> new RuntimeException("Seat not found"));
 
-            // Set the associations
             ticket.setUser(user);
             ticket.setShowtime(showtime);
             ticket.setSeat(seat);
             ticket.setSeatStatus(Seat.SeatStatus.TAKEN);
 
-            // Add ticket to the list
             tickets.add(ticket);
         }
-
         return tickets;
     }
 
     @Override
     public OrderDto getOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Order with ID " + orderId + " not found"));
-        return modelMapper.map(order, OrderDto.class);
+        return orderRepository.findById(orderId)
+                .map(order -> modelMapper.map(order, OrderDto.class))
+                .orElse(null);
     }
 
     @Override
     public List<OrderDto> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream()
+        return orderRepository.findAll().stream()
                 .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<OrderDto> getOrdersByUserId(Long userId) {
-        List<Order> orders = orderRepository.findByUserId(userId);
-        return orders.stream()
+        return orderRepository.findByUserId(userId).stream()
                 .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toList());
     }
@@ -161,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void sendOrderConfirmation(OrderDto orderDto) {
         User user = userRepository.findById(orderDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User with ID " + orderDto.getUserId() + " not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Order order = modelMapper.map(orderDto, Order.class);
         emailService.sendOrderConfirmationEmail(order, user);
     }

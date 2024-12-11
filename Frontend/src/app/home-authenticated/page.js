@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import "../styles/home-authenticated.css";
@@ -12,6 +12,8 @@ export default function Home() {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Track if user is logged in
+    const [genres, setGenres] = useState([]); // List of genres
+    const [selectedGenre, setSelectedGenre] = useState(""); // Selected genre filter
     const router = useRouter();
 
     useEffect(() => {
@@ -20,11 +22,18 @@ export default function Home() {
             setIsLoggedIn(true); // User is logged in
         }
 
+        // Fetch all movies
         axios
             .get("http://localhost:8080/api/movies/get-movies")
             .then((response) => {
                 setMovies(response.data);
                 setFilteredMovies(response.data);
+
+                // Extract unique genres
+                const allGenres = response.data
+                    .map((movie) => movie.genre)
+                    .flatMap((genre) => genre.split(",").map((g) => g.trim()));
+                setGenres([...new Set(allGenres)]);
             })
             .catch((error) => console.error("Error fetching movies:", error));
     }, []);
@@ -39,6 +48,24 @@ export default function Home() {
                       movie.title.toLowerCase().includes(term)
                   )
         );
+    };
+
+    const handleGenreChange = (event) => {
+        const genre = event.target.value;
+        setSelectedGenre(genre);
+
+        if (genre) {
+            setFilteredMovies(
+                movies.filter((movie) =>
+                    movie.genre
+                        .split(",")
+                        .map((g) => g.trim().toLowerCase())
+                        .includes(genre.toLowerCase())
+                )
+            );
+        } else {
+            setFilteredMovies(movies);
+        }
     };
 
     const handleLogout = () => {
@@ -63,12 +90,12 @@ export default function Home() {
 
     const getEmbedUrl = (url) => {
         let videoId;
-        if (url.includes('youtu.be')) {
-            videoId = url.split('youtu.be/')[1]?.split('?')[0];
-        } else if (url.includes('v=')) {
-            videoId = url.split('v=')[1]?.split('&')[0];
+        if (url.includes("youtu.be")) {
+            videoId = url.split("youtu.be/")[1]?.split("?")[0];
+        } else if (url.includes("v=")) {
+            videoId = url.split("v=")[1]?.split("&")[0];
         }
-        return videoId ? `https://www.youtube.com/embed/${videoId}` : '';
+        return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
     };
 
     return (
@@ -89,7 +116,7 @@ export default function Home() {
                     </nav>
 
                     <header className="welcome-header">
-                        <h1>Welcome to Ecinema</h1>
+                        <h1>Welcome to E-Cinema</h1>
                     </header>
 
                     <div className="search-bar">
@@ -100,6 +127,23 @@ export default function Home() {
                             onChange={handleSearch}
                             className="search-input"
                         />
+                    </div>
+
+                    <div className="genre-filter">
+                        <label htmlFor="genre">Filter by Genre:</label>
+                        <select
+                            id="genre"
+                            value={selectedGenre}
+                            onChange={handleGenreChange}
+                            className="genre-dropdown"
+                        >
+                            <option value="">All Genres</option>
+                            {genres.map((genre) => (
+                                <option key={genre} value={genre}>
+                                    {genre}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     <main className="movies-section">
@@ -184,7 +228,7 @@ export default function Home() {
             ) : (
                 <div className="login-prompt">
                     <div className="overlay">
-                        <h1>Welcome to E-Cinema</h1>
+                        <h1>Welcome to the e-cinema </h1>
                         <p>Please log in to explore movies and book tickets.</p>
                         <button
                             className="login-button"

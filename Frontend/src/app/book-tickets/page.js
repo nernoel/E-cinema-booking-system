@@ -15,17 +15,20 @@ const BookTickets = () => {
   const [showTimes, setShowTimes] = useState([]);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState(''); // No default payment method yet
-  const [paymentCards, setPaymentCards] = useState([]); // Store user's payment cards
-  const [loading, setLoading] = useState(false); // Loading state
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentCards, setPaymentCards] = useState([]);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [promoError, setPromoError] = useState('');
+  const [promoUsed, setPromoUsed] = useState(false);
 
   const ticketPrices = {
-    Child: 9,
-    Adult: 15,
-    Senior: 5,
+    Child: 9.99,
+    Adult: 15.99,
+    Senior: 5.99,
   };
 
-  // Fetch movies
   useEffect(() => {
     const fetchMovies = async () => {
       try {
@@ -35,11 +38,9 @@ const BookTickets = () => {
         console.error("Error fetching movies:", error);
       }
     };
-
     fetchMovies();
   }, []);
 
-  // Fetch showtimes
   useEffect(() => {
     if (selectedMovie) {
       const fetchShowtimes = async () => {
@@ -54,12 +55,10 @@ const BookTickets = () => {
           console.error("Error fetching showtimes:", error);
         }
       };
-
       fetchShowtimes();
     }
   }, [selectedMovie]);
 
-  // Fetch seats
   useEffect(() => {
     if (showTime) {
       const fetchSeats = async () => {
@@ -70,43 +69,38 @@ const BookTickets = () => {
           console.error("Error fetching seats:", error);
         }
       };
-
       fetchSeats();
     }
   }, [showTime]);
 
-  // Fetch payment cards for the user
   useEffect(() => {
     const fetchPaymentCards = async () => {
       try {
         const storedEmail = localStorage.getItem("userEmail");
-        
-        // Fetch the user by email
         const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
-        const userId = userResponse.data.id; 
-  
-        // Fetch payment cards for the user
+        const userId = userResponse.data.id;
         const paymentCardsResponse = await axios.get(`http://localhost:8080/api/payment-cards/user/${userId}`);
         setPaymentCards(paymentCardsResponse.data);
       } catch (error) {
         console.error("Error fetching payment cards:", error);
       }
     };
-  
     fetchPaymentCards();
   }, []);
 
-  // Calculate total price
   useEffect(() => {
     let newTotal = selectedSeats.reduce((sum, seatId) => {
       const ageGroup = ages[seatId];
       return sum + (ticketPrices[ageGroup] || 0);
     }, 0);
-    setTotalPrice(newTotal);
-  }, [selectedSeats, ages]);
+
+    // Apply discount if promoDiscount exists
+    const discountedPrice = promoDiscount > 0 ? newTotal * (1 - promoDiscount / 100) : newTotal;
+    setTotalPrice(discountedPrice.toFixed(2));  // Update the total price with discount applied
+  }, [selectedSeats, ages, promoDiscount]); // Recalculate when any of these change
 
   const handleSeatSelection = (seatId) => {
-    setSelectedSeats(prev => 
+    setSelectedSeats(prev =>
       prev.includes(seatId) ? prev.filter(seat => seat !== seatId) : [...prev, seatId]
     );
   };
@@ -115,52 +109,96 @@ const BookTickets = () => {
     setAges({ ...ages, [seatId]: event.target.value });
   };
 
+  const handleApplyPromo = async () => {
+    try {
+      const storedEmail = localStorage.getItem("userEmail");
+      const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
+      const userId = userResponse.data.id;
+
+      // Check if the user has already used this promo code
+      const promoCodeId = promoCode;
+      const usageResponse = await axios.get(`http://localhost:8080/api/promos/usage/${userId}/${promoCodeId}`);
+
+      if (usageResponse.status === 404) {
+        setPromoUsed(false);  // Promo code hasn't been used yet
+
+        // Proceed with checking if the promo code is valid
+        const promoResponse = await axios.get(`http://localhost:8080/api/promos/get-promo/${promoCode}`);
+        if (promoResponse.status === 200) {
+          const promo = promoResponse.data;
+          if (promo.isActive === "ACTIVE") {
+            setPromoDiscount(promo.discountPercentage);
+            setPromoError('');
+            alert('Promo code applied successfully!');
+            setPromoCode('');
+          } else {
+            setPromoError("Promo code is expired.");
+          }
+        } else {
+          setPromoError("Promo code not found.");
+        }
+      } else {
+        setPromoUsed(true);  // Promo code has already been used
+        setPromoError("You have already used this promo code.");
+      }
+    } catch (error) {
+      console.error("Error applying promo code:", error);
+      setPromoError("Error applying promo code.");
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    setLoading(true); // Set loading state to true while submitting
+    setLoading(true);
   
     try {
       const storedEmail = localStorage.getItem("userEmail");
       const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
-      const userId = userResponse.data.id; 
+      const userId = userResponse.data.id;
   
       const tickets = selectedSeats.map(seatId => {
-        const seat = seats.find(seat => seat.id === seatId); 
+        const seat = seats.find(seat => seat.id === seatId);
         const ticketPrice = ticketPrices[ages[seatId]] || 0;
-        const ticketType = ages[seatId]; 
+        const ticketType = ages[seatId];
   
         return {
-          userId: userId,
+          userId,
           showtimeId: showTime,
           seatId: seat.id,
-          ticketPrice: ticketPrice,
-          ticketType: ticketType
+          ticketPrice,
+          ticketType,
         };
       });
   
       const bookingData = {
-        userId: userId,
+        userId,
         movieId: selectedMovie,
-        orderPrice: totalPrice, 
-        tickets: tickets,
-        paymentCardId: paymentMethod
+        orderPrice: totalPrice,
+        tickets,
+        paymentCardId: paymentMethod,
+        //promoCode,
       };
   
-      // Save booking data to localStorage
-      localStorage.setItem("bookingData", JSON.stringify(bookingData));
-  
-      // Send the booking request
+      // Create order
       const response = await axios.post("http://localhost:8080/api/orders/create-order", bookingData);
+      const orderId = response.data.id;  // Get the order ID from the response
       alert("Booking confirmed!");
+      console.log(bookingData);
   
-      router.push('/order-confirmation'); // Redirect to confirmation page
+      // Fetch the order with matching details (Optional if needed)
+      const orderResponse = await axios.get(`http://localhost:8080/api/orders/get-order/${orderId}`);
+      if (orderResponse.status === 200) {
+        console.log("Fetched order details:", orderResponse.data);
+      }
+  
+      // Push to order confirmation with the order ID
+      router.push(`/order-confirmation?orderId=${orderId}`);
   
     } catch (error) {
       console.error("Error booking tickets:", error);
       alert("Error booking tickets. Please try again.");
     } finally {
-      setLoading(false); // Set loading state back to false after the process
+      setLoading(false);
     }
   };
   
@@ -169,7 +207,7 @@ const BookTickets = () => {
     <div className="book-tickets-container">
       <h1>Book Tickets</h1>
       <form onSubmit={handleSubmit}>
-        {/* Select Movie */}
+        {/* Movie Selection */}
         <div>
           <label htmlFor="movie">Select Movie:</label>
           <select id="movie" value={selectedMovie} onChange={(e) => setSelectedMovie(e.target.value)}>
@@ -180,7 +218,7 @@ const BookTickets = () => {
           </select>
         </div>
 
-        {/* Select Show Time */}
+        {/* Show Time Selection */}
         <div>
           <label htmlFor="show-time">Select Show Time:</label>
           <select id="show-time" value={showTime} onChange={(e) => setShowTime(e.target.value)}>
@@ -224,7 +262,25 @@ const BookTickets = () => {
           ))}
         </div>
 
-        {/* Payment Method Selection */}
+        {/* Promo Code */}
+        {!promoDiscount && !promoUsed && (
+          <div>
+            <h2>Apply Promo Code:</h2>
+            <input
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+              placeholder="Enter promo code"
+            />
+            <button type="button" onClick={handleApplyPromo}>
+              Apply
+            </button>
+            {promoError && <p className="error">{promoError}</p>}
+          </div>
+        )}
+        {promoUsed && <p className="error">You have already used this promo code.</p>}
+
+        {/* Payment Method */}
         <div>
           <h2>Select Payment Method:</h2>
           <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
@@ -237,7 +293,7 @@ const BookTickets = () => {
           </select>
         </div>
 
-        {/* Display Total Price */}
+        {/* Total Price */}
         <div className="price-display">
           <h2>Total Price: ${totalPrice}</h2>
         </div>
@@ -246,7 +302,6 @@ const BookTickets = () => {
           {loading ? "Booking..." : "Confirm Booking"}
         </button>
       </form>
-      <a href="/" className="back-to-home">Back to Home</a>
     </div>
   );
 };

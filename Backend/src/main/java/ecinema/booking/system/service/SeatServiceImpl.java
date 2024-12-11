@@ -32,6 +32,16 @@ public class SeatServiceImpl implements SeatService {
     }
 
     @Override
+public SeatDto getSeatById(Long seatId) {
+    Seat seat = seatRepository.findById(seatId)
+            .orElseThrow(() -> new RuntimeException("Seat not found"));
+    
+    // Return the seat as a SeatDto
+    return modelMapper.map(seat, SeatDto.class);
+}
+
+
+    @Override
     public List<SeatDto> getSeatsForShowtime(Long showtimeId) {
         List<Seat> seats = seatRepository.findByShowtimeId(showtimeId);
         return seats.stream()
@@ -49,6 +59,7 @@ public SeatDto updateSeatAvailability(Long seatId, SeatStatus seatStatus) {
 
     return modelMapper.map(seat, SeatDto.class);
 }
+
 
 
 @Override

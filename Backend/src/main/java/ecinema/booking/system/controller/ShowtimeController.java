@@ -27,7 +27,7 @@ public class ShowtimeController {
 
     @PostMapping("/schedule-movie")
     public ResponseEntity<String> scheduleMovie(@RequestBody ScheduleMovieRequestDto request) {
-        LocalDateTime dateTime = LocalDateTime.parse(request.getDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        //LocalDateTime dateTime = LocalDateTime.parse(request.getDateTime(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         try {
             String message = showtimeService.scheduleMovie(request.getMovieId(), request.getShowroomId(), request.getDateTime());
             return ResponseEntity.ok(message);

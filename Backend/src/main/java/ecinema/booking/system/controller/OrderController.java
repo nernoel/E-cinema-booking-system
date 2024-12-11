@@ -20,14 +20,12 @@ public class OrderController {
 
     @PostMapping("/create-order")
     public ResponseEntity<OrderDto> createOrder(@RequestBody OrderDto orderDto) {
-        if (orderDto.getUserId() == null || orderDto.getMovieId() == null) {
+        if (orderDto.getUserId() == null || orderDto.getMovieId() == null || orderDto.getPaymentCardId() == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
         OrderDto createdOrder = orderService.createOrder(orderDto);
-
-        // Email handling is now within the service layer
-        orderService.sendOrderConfirmation(createdOrder);
+        //orderService.sendOrderConfirmation(createdOrder);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
@@ -38,10 +36,19 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/get-order/{orderId}")
+    public ResponseEntity<OrderDto> getOrderById(@PathVariable Long orderId) {
+        OrderDto order = orderService.getOrderById(orderId);
+        if (order != null) {
+            return ResponseEntity.ok(order);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @GetMapping
     public ResponseEntity<List<OrderDto>> getAllOrders() {
         List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
 }
-
