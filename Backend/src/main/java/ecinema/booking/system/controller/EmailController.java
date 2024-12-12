@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ecinema.booking.system.entity.VerificationCode;
 
-import jakarta.servlet.http.HttpServletRequest;
 
-
-import ecinema.booking.system.repository.VerificationCodeRepository;
 
 import ecinema.booking.system.service.VerificationService;
 import ecinema.booking.system.service.EmailService;
@@ -84,9 +81,6 @@ public ResponseEntity<String> verifyCode(@RequestBody VerificationRequestDto ver
 
     return ResponseEntity.ok("Verification successful. User status updated to ACTIVE.");
 }
-
-
-    
 
     @PostMapping("/api/send-confirmation-email")
     public ResponseEntity<?> sendConfirmationEmail(@RequestBody EmailRequestDto emailRequest) {

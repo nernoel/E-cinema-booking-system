@@ -105,7 +105,7 @@ export default function Home() {
                     <nav className="navbar">
                         <h1 className="logo">E-Cinema</h1>
                         <div className="nav-links">
-                            <Link href="/">Home</Link>
+                            <Link href="/home-authenticated">Home</Link>
                             <Link href="/book-tickets">Book Tickets</Link>
                             <Link href="/edit-profile">Edit Profile</Link>
                             <Link href="/order-history">View order history</Link>

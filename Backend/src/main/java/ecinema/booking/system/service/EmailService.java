@@ -1,6 +1,7 @@
 package ecinema.booking.system.service;
 
 import ecinema.booking.system.entity.VerificationCode;
+import ecinema.booking.system.repository.UserRepository;
 import ecinema.booking.system.repository.VerificationCodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,6 +26,9 @@ public class EmailService {
     @Autowired
     private VerificationCodeRepository verificationCodeRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     private String senderAddress = "nnernoel@gmail.com";
 
     public void sendEmail(String recipientEmail, String subject, String messageContent) {
@@ -45,7 +49,7 @@ public class EmailService {
     public void sendPromoEmailToSubscribedUsers(List<User> subscribedUsers, String promoCode, Double discountPercentage) {
         String subject = "New Promo Code: " + promoCode;
         String messageContent = "Hello,\n\nWe have a new promo code for you! Use code: " + promoCode + " to get a discount of " + discountPercentage + "% off your next booking.\n\nEnjoy the savings!\n\nBest regards,\nE-Cinema Team";
-
+        
         for (User user : subscribedUsers) {
             sendEmail(user.getEmail(), subject, messageContent);
         }

@@ -1,3 +1,4 @@
+// OrderServiceImpl.java
 package ecinema.booking.system.service;
 
 import ecinema.booking.system.dto.OrderDto;
@@ -70,6 +71,11 @@ public class OrderServiceImpl implements OrderService {
         order.setTickets(tickets);
         ticketRepository.saveAll(tickets);
 
+        // Send confirmation email
+        //emailService.sendOrderConfirmationEmail(order, user);
+        System.out.println("Order confirmation email triggered for user: " + user.getEmail());
+
+
         return modelMapper.map(order, OrderDto.class);
     }
 
@@ -127,3 +133,4 @@ public class OrderServiceImpl implements OrderService {
         emailService.sendOrderConfirmationEmail(order, user);
     }
 }
+

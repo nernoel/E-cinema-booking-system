@@ -110,42 +110,53 @@ const BookTickets = () => {
   };
 
   const handleApplyPromo = async () => {
-    try {
-      const storedEmail = localStorage.getItem("userEmail");
-      const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
-      const userId = userResponse.data.id;
+  try {
+    const storedEmail = localStorage.getItem("userEmail");
+    const userResponse = await axios.get(`http://localhost:8080/api/users/get-user?email=${storedEmail}`);
+    const userId = userResponse.data.id;
 
-      // Check if the user has already used this promo code
-      const promoCodeId = promoCode;
-      const usageResponse = await axios.get(`http://localhost:8080/api/promos/usage/${userId}/${promoCodeId}`);
-
-      if (usageResponse.status === 404) {
-        setPromoUsed(false);  // Promo code hasn't been used yet
-
-        // Proceed with checking if the promo code is valid
-        const promoResponse = await axios.get(`http://localhost:8080/api/promos/get-promo/${promoCode}`);
-        if (promoResponse.status === 200) {
-          const promo = promoResponse.data;
-          if (promo.isActive === "ACTIVE") {
-            setPromoDiscount(promo.discountPercentage);
-            setPromoError('');
-            alert('Promo code applied successfully!');
-            setPromoCode('');
-          } else {
-            setPromoError("Promo code is expired.");
-          }
-        } else {
-          setPromoError("Promo code not found.");
-        }
-      } else {
-        setPromoUsed(true);  // Promo code has already been used
-        setPromoError("You have already used this promo code.");
-      }
-    } catch (error) {
-      console.error("Error applying promo code:", error);
-      setPromoError("Error applying promo code.");
+    // Get the promo code details
+    const promoResponse = await axios.get(`http://localhost:8080/api/promos/get-promo/${promoCode}`);
+    if (promoResponse.status !== 200) {
+      setPromoError("Promo code not found.");
+      return;
     }
-  };
+
+    const promo = promoResponse.data;
+    
+    if (promo.isActive !== "ACTIVE") {
+      setPromoError("Promo code is expired.");
+      return;
+    }
+
+    // Check if the user has already used this promo code
+    const usageResponse = await axios.get(`http://localhost:8080/api/promos/usage/${userId}/${promo.id}`);
+    
+    if (usageResponse.status === 200) {
+      const usage = usageResponse.data;
+
+      if (usage.usageStatus === "USED") {
+        setPromoUsed(true);
+        setPromoError("You have already used this promo code.");
+        return;
+      }
+    }
+
+    if (usageResponse.status === 404 || usageResponse.data.usageStatus === "NOT_USED") {
+      setPromoUsed(false);
+      setPromoDiscount(promo.discountPercentage);
+      setPromoError('');
+      alert('Promo code applied successfully!');
+      setPromoCode('');
+    } else {
+      setPromoError("Error verifying promo code usage.");
+    }
+  } catch (error) {
+    console.error("Error applying promo code:", error);
+    setPromoError("Error applying promo code.");
+  }
+};
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();

@@ -3,6 +3,8 @@ package ecinema.booking.system.entity;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "promo_codes")
 public class PromoCode {
@@ -22,7 +24,8 @@ public class PromoCode {
         ACTIVE,
         INACTIVE
     }
-
+    
+    @JsonBackReference
     @OneToMany(mappedBy = "promoCode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PromoUsage> usages;
 

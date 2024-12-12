@@ -25,9 +25,10 @@ public class OrderController {
         }
 
         OrderDto createdOrder = orderService.createOrder(orderDto);
-        //orderService.sendOrderConfirmation(createdOrder);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
+         // Email handling is now within the service layer
+         orderService.sendOrderConfirmation(createdOrder);
+         return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
     }
 
     @GetMapping("/user/{userId}")

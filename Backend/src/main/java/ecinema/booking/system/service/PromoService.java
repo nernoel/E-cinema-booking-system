@@ -31,6 +31,8 @@ public class PromoService {
     @Autowired
     private EmailService emailService;
 
+    
+
     public PromoCodeDto applyPromoCode(Long userId, String promoCode) throws Exception {
         // Find the active promo code and user
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -77,12 +79,25 @@ public class PromoService {
         // Save the promo code in the repository
         promoCodeRepository.save(promoCode);
     
-        // Send the promo code to all subscribed users
+        // Create a PromoUsage entry for each user (optional: add logic to create only for specific users)
+        List<User> allUsers = userRepository.findAll(); // Fetch all users or filter as needed
+        for (User user : allUsers) {
+            PromoUsage promoUsage = new PromoUsage();
+            promoUsage.setUser(user); // Associate with the user
+            promoUsage.setPromoCode(promoCode); // Associate with the new promo code
+            promoUsage.setUsageStatus(PromoUsage.UsageStatus.NOT_USED); 
+    
+            // Save the new promo usage record for each user
+            promoUsageRepository.save(promoUsage);
+        }
+    
+        // Send the promo code to all subscribed users (if required)
         sendPromoEmailToSubscribedUsers(promoCode);
     
         // Return the PromoCodeDto object
         return new PromoCodeDto(promoCode.getId(), promoCode.getCode(), promoCode.getDiscountPercentage(), promoCode.getIsActive().toString());
     }
+    
     
     private void sendPromoEmailToSubscribedUsers(PromoCode promoCode) {
         // Get all users who are subscribed (PromoStatus.SUBSCRIBED)
@@ -113,11 +128,15 @@ public class PromoService {
     
 
     public PromoUsageDto trackPromoUsage(Long userId, Long promoCodeId) {
-        // Find PromoUsage by user and promo code
         PromoUsage promoUsage = promoUsageRepository.findByUserIdAndPromoCodeId(userId, promoCodeId)
-                .orElseThrow(() -> new RuntimeException("Promo usage not found"));
-
-        // Return the PromoUsage DTO
-        return new PromoUsageDto(promoUsage.getId(), userId, promoCodeId, promoUsage.getUsageStatus().toString());
+                .orElseThrow(() -> new RuntimeException("Promo usage not found for the given user and promo code"));
+    
+        return new PromoUsageDto(
+                promoUsage.getId(),
+                promoUsage.getUser().getId(),
+                promoUsage.getPromoCode().getId(),
+                promoUsage.getUsageStatus().toString()
+        );
     }
+    
 }

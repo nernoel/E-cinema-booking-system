@@ -3,6 +3,7 @@ package ecinema.booking.system.controller;
 import ecinema.booking.system.dto.PromoCodeDto;
 import ecinema.booking.system.dto.PromoUsageDto;
 import ecinema.booking.system.entity.PromoCode;
+import ecinema.booking.system.entity.PromoUsage;
 import ecinema.booking.system.service.PromoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,12 @@ public class PromoController {
 
     // Endpoint to get the usage details of a promo code
     @GetMapping("/usage/{userId}/{promoCodeId}")
-    public ResponseEntity<PromoUsageDto> trackPromoUsage(@PathVariable Long userId, @PathVariable Long promoCodeId) {
+    public ResponseEntity<?> trackPromoUsage(@PathVariable Long userId, @PathVariable Long promoCodeId) {
         try {
             PromoUsageDto promoUsageDto = promoService.trackPromoUsage(userId, promoCodeId);
             return ResponseEntity.ok(promoUsageDto);
-        } catch (Exception e) {
-            // Instead of returning null, return a proper response with an error message
-            return ResponseEntity.status(404).body(null);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body("Error: " + e.getMessage());
         }
     }
 

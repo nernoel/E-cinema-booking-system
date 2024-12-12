@@ -61,7 +61,7 @@ const OrderConfirmation = () => {
           <ul className="tickets-text">
             {orderDetails.tickets.map((ticket) => (
               <li key={ticket.id}>
-                <strong>Seat:</strong> {ticket.seatId}, <strong>Type:</strong>{" "}
+                <strong>SeatId:</strong> {ticket.seatId}, <strong>Type:</strong>{" "}
                 {ticket.ticketType}, <strong>Price:</strong> ${ticket.ticketPrice.toFixed(2)}
               </li>
             ))}
