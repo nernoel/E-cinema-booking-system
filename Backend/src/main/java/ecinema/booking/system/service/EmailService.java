@@ -29,7 +29,7 @@ public class EmailService {
     @Autowired
     private UserRepository userRepository;
 
-    private String senderAddress = "nnernoel@gmail.com";
+    private String senderAddress = "email_address";
 
     public void sendEmail(String recipientEmail, String subject, String messageContent) {
         SimpleMailMessage message = new SimpleMailMessage();
